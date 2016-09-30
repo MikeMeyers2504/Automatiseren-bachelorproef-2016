@@ -6,7 +6,7 @@ body {
 	background-size: 100%;	
 	background-repeat: no-repeat;
 	margin: auto;
-	color: #F9F9F9;
+	color: #000000;
 	line-height: 1.7;
 	font-size: 12px;
 	letter-spacing: 1px;
@@ -16,7 +16,7 @@ body {
 .jumbotron {
 	background-image: url("achtergrondb.png");
 	background-size: 100%;
-	color: #111111;	
+	color: #000000;	
 	padding: 10px;
 	border-radius: 1em;
 	margin: 20px 0 0 20px;
@@ -32,3 +32,16 @@ body {
 	margin: 10px;
 	padding-top: 10px;
 } 
+
+.right-body {
+	border-left: dotted 1px;
+	padding-left: 10px;
+}
+
+.left-body {
+	margin-bottom: 10px;
+}
+
+.navbar-form {
+	position: fixed;
+}
