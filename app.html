@@ -1,17 +1,35 @@
 <!DOCTYPE html>
 
-<html>
+<html ng-app='app'>
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <script type="text/javascript" src="js/GithubAPI.js"></script>
         <link href="css/gs.min.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="css/reset.css"/>
+        <!--<link rel="stylesheet" type="text/css" href="css/reset.css"/>-->
         <link rel="stylesheet" type="text/css" href="css/app.css"/>
         <title>RepoHelper</title>
+        <script>
+            var app = angular.module('app', []);
+
+            app.controller('MainCtrl', function($http) {
+                var vm = this;
+
+                vm.fetchData = function(user){
+                    vm.loading = true;
+                    $http.get('https://api.github.com/users/' + user.name).then(function(res){
+                            console.log(res);
+                            vm.data = res;
+                            vm.loading = false;
+                    })
+                }     
+            })
+        </script>
     </head>
 
-    <body>
+    <body ng-controller='MainCtrl as vm'>
         <div class="row">
             <div class="col-md-4" style="overflow: none; height: 638px;">
                 <div class="jumbotron"> 
@@ -126,7 +144,12 @@
                 </div> <!-- close Jumbotron -->
             </div>
             <div class="col-md-5">
-                
+                <!-- hier komt de test versie van de API-->
+                <label for="enter">Enter a username</label>
+                <input type="text" ng-model="user.name" name="enter">
+                <button ng-click="vm.fetchData(user)">Go!</button>
+                <h4 ng-if="vm.loading === true">Loading....</h4>
+                <h3>{{vm.data}}</h3>
             </div>
             <div class="col-md-3">
                 <form class="navbar-form navbar-right" role="search">
@@ -140,7 +163,7 @@
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="js/jquery-2.1.1.js"></script>
+        <!--<script src="js/jquery-2.1.1.js"></script>-->
         <script src="js/gs.min.js"></script>
     </body>
 </html>
