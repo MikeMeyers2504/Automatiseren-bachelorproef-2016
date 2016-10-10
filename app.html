@@ -7,26 +7,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
         <script type="text/javascript" src="js/GithubAPI.js"></script>
-        <link href="css/gs.min.css" rel="stylesheet">
-        <!--<link rel="stylesheet" type="text/css" href="css/reset.css"/>-->
+        <link href="css/bp.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/reset.css"/>
         <link rel="stylesheet" type="text/css" href="css/app.css"/>
         <title>RepoHelper</title>
-        <script>
-            var app = angular.module('app', []);
-
-            app.controller('MainCtrl', function($http) {
-                var vm = this;
-
-                vm.fetchData = function(user){
-                    vm.loading = true;
-                    $http.get('https://api.github.com/users/' + user.name).then(function(res){
-                            console.log(res);
-                            vm.data = res;
-                            vm.loading = false;
-                    })
-                }     
-            })
-        </script>
     </head>
 
     <body ng-controller='MainCtrl as vm'>
@@ -144,6 +128,11 @@
                 </div> <!-- close Jumbotron -->
             </div>
             <div class="col-md-5">
+                <h1>Student Information</h1>
+
+
+
+
                 <!-- hier komt de test versie van de API-->
                 <label for="enter">Enter a username</label>
                 <input type="text" ng-model="user.name" name="enter">
@@ -163,7 +152,9 @@
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <!--<script src="js/jquery-2.1.1.js"></script>-->
-        <script src="js/gs.min.js"></script>
+        <!-- <script src="js/jquery-2.1.1.js"></script> -->
+        <script src="js/bp.min.js"></script>
+        <script src="js/bpEdits.js"></script>
+        <script src="js/api.js"></script>
     </body>
 </html>
