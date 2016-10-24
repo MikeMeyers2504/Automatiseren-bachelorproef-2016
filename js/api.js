@@ -15,7 +15,7 @@ app.controller('MainCtrl', function($scope, $http) {
 
     vm.ShowData = function(){
         var i;
-        $http.get('https://api.github.com/orgs/AP-Elektronica-ICT/members?access_token=7cc5cabb0ff2c1cfef1f2fe3192ef584339b9726&page=1&per_page=100&role=member').then(function(res){ 
+        $http.get('https://api.github.com/orgs/AP-Elektronica-ICT/members?"Hier komt ..."&page=1&per_page=100&role=member').then(function(res){ 
                 vm.studentNames = [];
                 for (i = 0; i < res.data.length; i++) {
                     vm.studentNames.push(
