@@ -15,7 +15,7 @@ app.controller('MainCtrl', function($scope, $http) {
 
     vm.ShowData = function(){
         var i;
-        $http.get('https://api.github.com/orgs/AP-Elektronica-ICT/members?"Hier komt de ..."&page=1&per_page=100&role=member').then(function(res){ 
+        $http.get('https://api.github.com/orgs/AP-Elektronica-ICT/members?access_token=7cc5cabb0ff2c1cfef1f2fe3192ef584339b9726&page=1&per_page=100&role=member').then(function(res){ 
                 vm.studentNames = [];
                 for (i = 0; i < res.data.length; i++) {
                     vm.studentNames.push(
@@ -35,7 +35,7 @@ app.controller('MainCtrl', function($scope, $http) {
         $http.get('https://api.github.com/users/' + userLogin + '/repos').then(function(res){
                 console.log(res);
                 for (var i =  0; i < res.data.length; i++) {
-                    if (res.data[i].name.indexOf("2EALOVESDOGGEN")!== -1) {
+                    if (res.data[i].name.indexOf("2EALOVESDOGGEN")!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1
                         console.log(res.data[i].name);
                         console.log(res.data[i].id);
                         console.log(res.data[i].open_issues);
@@ -56,7 +56,7 @@ app.controller('MainCtrl', function($scope, $http) {
                     vm.owner = null;
                     vm.sha = null;
                     vm.message = null;
-                    alert('lol');
+                    alert('No BAP repo found');
                     console.log(found);
                 }
                 vm.loading = false;
@@ -88,7 +88,3 @@ app.controller('MainCtrl', function($scope, $http) {
         })
     }
 });
-
-/*
-- check voor zo een alert te geven als die geen juiste BAP repo heeft
-*/
