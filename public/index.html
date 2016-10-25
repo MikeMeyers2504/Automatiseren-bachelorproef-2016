@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html ng-app="myApp"> <!--ng-app='app'-->
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <link href="css/bp.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/reset.css"/>
+        <link rel="stylesheet" type="text/css" href="css/app.css"/>
+        <title>RepoHelper</title>
+    </head>
+
+    <body ng-controller="AppCtrl"> <!--  ng-controller='MainCtrl as vm' -->
+        <div class="row">
+            <div class="col-md-4" style="overflow: none; height: 638px;">
+                <div class="jumbotron"> 
+                    <div class="media"">
+                        <div class="media-left" style="width: 100px; height: 100px;">
+                            <img class="media-object" width="auto" height="100%" src="images/JoeyD.jpg" alt="GoenSkwat @ GRK">
+                        </div>
+                        <div class="media-body left-body">
+                            <p>Joey Driessen <span class="glyphicon glyphicon-certificate" style="color: lightgreen;"></span></p>
+                            <p>Commits:9<br>
+                                Issues:4<br>
+                                Last log</p>
+                        </div>
+                        <div class="media-body right-body">
+                            <p>Stagebedrijf:<br> Microsoft</p>
+                            <p>Promotors:<br> Tim Dams<br> </p>    
+                        </div>
+                        <div class="pull-right btn-body">
+                            <!-- <button type="submit" class="btn btn-link ">Edit</button> -->
+                            <button type="submit" class="btn btn-default ">Scriptie</button>
+                            <button type="submit" class="btn btn-info ">Repository</button>
+                        </div>
+                    </div>
+                </div> <!-- close Jumbotron -->
+                <div class="jumbotron" style="opacity: 0.5"> 
+                    <div class="media"">
+                        <div class="media-left" style="width: 100px; height: 100px;">
+                            <img class="media-object" width="auto" height="100%" src="images/MathiasS.jpg" alt="GoenSkwat @ GRK">
+                        </div>
+                        <div class="media-body left-body">
+                            <p>Mathias Samyn <span class="glyphicon glyphicon-certificate" style="color: orange;"></span></p>
+                            <p>Commits:12<br>
+                                Issues:7<br>
+                                Last log</p>
+                        </div>
+                        <div class="media-body right-body">
+                            <p>Stagebedrijf:<br> November Five</p>
+                            <p>Promotors:<br> Maarten Luyts<br> </p>                            
+                        </div>
+                        <div class="pull-right btn-body">
+                            <!-- <button type="submit" class="btn btn-link ">Edit</button> -->
+                            <button type="submit" class="btn btn-default ">Scriptie</button>
+                            <button type="submit" class="btn btn-info ">Repository</button>
+                        </div>
+                    </div>
+                </div> <!-- close Jumbotron -->
+                <div class="jumbotron" style="opacity: 0.5"> 
+                    <div class="media"">
+                        <div class="media-left" style="width: 100px; height: 100px;">
+                            <img class="media-object" width="auto" height="100%" src="images/MariJo.jpg" alt="GoenSkwat @ GRK">
+                        </div>
+                        <div class="media-body left-body">
+                            <p>Marijn Joosens <span class="glyphicon glyphicon-certificate" style="color: red;"></span></p>
+                            <p>Commits:17<br>
+                                Issues:11<br>
+                                Last log</p>
+                        </div>
+                        <div class="media-body right-body">
+                            <p>Stagebedrijf:<br> Google</p>
+                            <p>Promotors:<br> Tom Peeters<br> </p>                            
+                        </div>
+                        <div class="pull-right btn-body">
+                            <!-- <button type="submit" class="btn btn-link ">Edit</button> -->
+                            <button type="submit" class="btn btn-default ">Scriptie</button>
+                            <button type="submit" class="btn btn-info ">Repository</button>
+                        </div>
+                    </div>
+                </div> <!-- close Jumbotron -->
+                <div class="jumbotron" style="opacity: 0.5"> 
+                    <div class="media"">
+                        <div class="media-left" style="width: 100px; height: 100px;">
+                            <img class="media-object" width="auto" height="100%" src="images/JoeyD.jpg" alt="GoenSkwat @ GRK">
+                        </div>
+                        <div class="media-body left-body">
+                            <p>Joey Driessen <span class="glyphicon glyphicon-certificate" style="color: lightgreen;"></span></p>
+                            <p>Commits:9<br>
+                                Issues:4<br>
+                                Last log</p>
+                        </div>
+                        <div class="media-body right-body">
+                            <p>Stagebedrijf:<br> Microsoft</p>
+                            <p>Promotors:<br> Tim Dams<br> </p>                            
+                        </div>
+                        <div class="pull-right btn-body">
+                            <!-- <button type="submit" class="btn btn-link ">Edit</button> -->
+                            <button type="submit" class="btn btn-default ">Scriptie</button>
+                            <button type="submit" class="btn btn-info ">Repository</button>
+                        </div>
+                    </div>
+                </div> <!-- close Jumbotron -->
+                <div class="jumbotron"> 
+                    <div class="media"">
+                        <div class="media-left" style="width: 100px; height: 100px;">
+                            <img class="media-object" width="auto" height="100%" src="images/JoeyD.jpg" alt="GoenSkwat @ GRK">
+                        </div>
+                        <div class="media-body left-body">
+                            <p>Joey Driessen <span class="glyphicon glyphicon-certificate" style="color: lightgreen;"></span></p>
+                            <p>Commits:9<br>
+                                Issues:4<br>
+                                Last log</p>
+                        </div>
+                        <div class="media-body right-body">
+                            <p>Stagebedrijf:<br> Microsoft</p>
+                            <p>Promotors:<br> Tim Dams<br> </p>                            
+                        </div>
+                        <div class="pull-right btn-body">
+                            <!-- <button type="submit" class="btn btn-link ">Edit</button> -->
+                            <button type="submit" class="btn btn-default ">Scriptie</button>
+                            <button type="submit" ng-click="vm.ShowData(users)" class="btn btn-info ">Repository</button>
+                        </div>
+                    </div>
+                </div> <!-- close Jumbotron -->
+            </div>
+
+            <div class="col-md-5">
+                <h1>Student Information</h1>
+
+                <br>
+
+                <table class="table">
+      <tbody>
+        <tr ng-repeat="student in studenteninfo">
+          <td>{{student.name}}</td>
+          <td>{{student.label}}</td>
+          <td>{{student.data}}</td>
+          <td><button class="btn btn-danger" ng-click="remove(student._id)">Remove</button></td>
+          <td><button class="btn btn-warning" ng-click="edit(student._id)">Edit</button></td>
+        </tr>
+      </tbody>
+    </table>
+                <!-- <form class="form-horizontal">
+                    <div class="form-group" ng-repeat="student in studenteninfo">
+                        <label for="Lastname" class="col-sm-2 control-label">{{student.label}}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="Lastname" placeholder="{{student.data}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Firstname" class="col-sm-2 control-label">First-name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="Firstname" placeholder="First name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Class" class="col-sm-2 control-label">Class:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="Class" placeholder="Class">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Promotor(s)" class="col-sm-2 control-label">Promotor(s):</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="Promotor(s)" placeholder="Promotor(s)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Company" class="col-sm-2 control-label">Company:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="Company" placeholder="Company">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-info">Save</button>
+                        </div>
+                    </div>
+                </form> -->
+
+                <!-- hier komt de test versie van de API-->
+                <label for="enter">Enter a username</label>
+                <input type="text" ng-model="user.name" name="enter">
+                <button ng-click="vm.fetchData(user)">Go!</button>
+                <h4 ng-if="vm.loading === true">Loading....</h4>
+                <h3>{{vm.name}} <br> {{vm.login}}</h3>
+            </div>
+
+            <div class="col-md-3">
+                <form class="navbar-form navbar-right" role="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Name">
+                        <button type="submit" class="btn btn-default">Search</button>
+                    </div>
+                     <!-- <input type="text" style="width: 84%; height: 400px; margin-top: 10px;"> 
+                     <button type="submit" class="btn btn-info" style="width: 84%; margin-top: 3px;">Mark</button> 
+                     <button type="submit" class="btn btn-success" style="width: 84%; margin-top: 3px;">Comment</button>
+                     <button type="submit" class="btn btn-info" style="width: 84%; margin-top: 3px;">Create issue</button>
+                     <button type="submit" class="btn btn-info" style="width: 84%; margin-top: 3px;">Close issue</button> -->
+
+                    <div class="form-group">
+                        <label for="newLabel" style="margin-top: 10px;">Label name:</label>
+                        <input type="text" ng-model="student.label" class="form-control" id="newLabel" placeholder="Label" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label for="newData" style="margin-top: 10px;">New data:</label>
+                        <input type="text" ng-model="student.data" class="form-control" id="newData" placeholder="Data" style="width: 106%;">
+                    </div>
+                    <button type="submit" class="btn btn-success" ng-click="addData()" style="margin-top: 10px; display: block;">Add Custom Field</button>
+                    <td><button class="btn btn-info" ng-click="update()">Update</button>&nbsp;&nbsp;<button class="btn btn-info" ng-click="deselect()">Clear</button></td>
+                </form>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <!-- <script src="js/jquery-2.1.1.js"></script>  -->
+        <script src="js/bp.min.js"></script>
+        <script src="js/bpEdits.js"></script>
+        <script src="js/api.js"></script>
+        <script src="controllers/controller.js"></script>
+
+    </body>
+</html>

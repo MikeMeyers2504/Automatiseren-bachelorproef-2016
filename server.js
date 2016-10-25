@@ -1,34 +1,54 @@
 var express = require('express');
 var app = express();
+var mongojs = require('mongojs');
+var db = mongojs('studenteninfo', ['studenteninfo']);
 var bodyParser = require('body-parser');
 
-app.use(express.static(__dirname + '/js')); // Laad de files in public on de server webpage
+app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 
-app.get('/contactlist', function (req, res) {
+app.get('/studenteninfo', function (req, res) {
   console.log('I received a GET request');
 
-  person1 = {
-    name: 'someone1',
-    email: 'someone1@hey.me',
-    number: '04xx xxx xx1'
-  };
-  
-  person2 = {
-    name: 'someone2',
-    email: 'someone2@hey.me',
-    number: '04xx xxx xx2'
-  };
-  
-  person3 = {
-    name: 'someone3',
-    email: 'someone3@hey.me',
-    number: '04xx xxx xx3'
-  };
-  
+  db.studenteninfo.find(function (err, docs) {
+    console.log(docs);
+    res.json(docs);
+  });
+});
 
-  var contactlist = [person1, person2, person3];
-  res.json(contactlist);
+app.post('/studenteninfo', function (req, res) {
+  console.log(req.body);
+  db.studenteninfo.insert(req.body, function(err, doc) {
+    res.json(doc);
+  });
+});
+
+app.delete('/studenteninfo/:id', function (req, res) {
+  var id = req.params.id;
+  console.log(id);
+  db.studenteninfo.remove({_id: mongojs.ObjectId(id)}, function (err, doc) {
+    res.json(doc);
+  });
+});
+
+app.get('/studenteninfo/:id', function (req, res) {
+  var id = req.params.id;
+  console.log(id);
+  db.studenteninfo.findOne({_id: mongojs.ObjectId(id)}, function (err, doc) {
+    res.json(doc);
+  });
+});
+
+app.put('/studenteninfo/:id', function (req, res) {
+  var id = req.params.id;
+  console.log(req.body.name);
+  db.studenteninfo.findAndModify({
+    query: {_id: mongojs.ObjectId(id)},
+    update: {$set: {name: req.body.name, label: req.body.label, data: req.body.data}},
+    new: true}, function (err, doc) {
+      res.json(doc);
+    }
+  );
 });
 
 app.listen(3000);
