@@ -1,4 +1,8 @@
 var app = angular.module('myApp');
+var AuthToken = 
+var AccessToken = 
+var Login = "https://github.com/login/oauth/authorize"
+var logged;
 
 function myFunction() {
     document.getElementById("hide1").style.visibility = 'visible';
@@ -16,6 +20,15 @@ var accessToken = "?access_token=...";
 app.controller('MainCtrl', function($scope, $http, $sce) {
     var vm = this;
     
+    vm.Login = function(){
+        window.location.replace(Login + AuthToken);
+        logged = true;
+    }
+
+    // if (logged != true) {
+    //    vm.Login();
+    // }
+
     vm.fetchData = function(user){
         vm.loading = true;
         $http.get('https://api.github.com/users/' + user.name).then(function(res){
@@ -29,6 +42,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     vm.ShowData = function(){
         var i;
         $http.get('https://api.github.com/orgs/AP-Elektronica-ICT/members' + accessToken + '&page=1&per_page=100&role=member').then(function(res){ 
+
                 vm.studentNames = [];
                 vm.LoginNames = [];
                 for (i = 0; i < res.data.length; i++) {
@@ -112,6 +126,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         var found = false;
         vm.loading = true;
         $http.get('https://api.github.com/users/' + userLogin + '/repos'+ accessToken).then(function(res){
+
                 console.log(res);
                 for (var i =  0; i < res.data.length; i++) {
                     if (res.data[i].name.indexOf("2EALOVESDOGGEN")!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1
@@ -148,7 +163,9 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     vm.GetCommits = function(userLogin, repoName){
         var found = false;
         vm.loading = true;
-        $http.get('https://api.github.com/repos/' + userLogin + "/" + repoName + '/commits' + accessToken).then(function(res){
+
+      $http.get('https://api.github.com/repos/' + userLogin + "/" + repoName + '/commits' + accessToken).then(function(res){
+
                 vm.commits = [];
                 vm.messageNames = [];
                 console.log(res);
@@ -186,6 +203,23 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
             $http.post('https://api.github.com/repos/' + userLogin + "/" + repoName + '/commits/' + sha + '/comments' + accessToken, {'body': CommentInfo}, config).then(function(res){
             console.log(res);
             document.getElementById("comments").value = "";
+              });
+        }
+    }
+    
+    vm.PostIssues = function(userLogin) {
+        var IssueTitle;
+        var IssueText;
+        var config;
+        IssueTitle = document.getElementById("issuetitle").value;
+        IssueText = document.getElementById("issues").value;
+        config = { headers: { 'Content-Type': 'application/json'}}
+
+        if (IssueText != '' && IssueTitle != '') {
+            $http.post('https://api.github.com/repos/'+ userLogin + '/Automatiseren-bachelorproef-2016/issues' + AuthToken, {'body': IssueText, 'title': IssueTitle}, config).then(function(res){
+            console.log(res);
+            document.getElementById("issues").value = "";
+            document.getElementById("issuetitle").value = "";
             });
         }
     }
@@ -232,6 +266,27 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         ScriptionHTML = Converter.makeHtml(vm.CONTENT);
                         $scope.vm.CONTENT = $sce.trustAsHtml(ScriptionHTML);
                     })
+                     }
+        })
+    }
+
+    vm.GetIssues = function(userLogin){
+        var found = false;
+        vm.loading = true;
+        $http.get('https://api.github.com/repos/'+ userLogin + '/Automatiseren-bachelorproef-2016/issues' + AuthToken + '&state=open').then(function(res){
+                vm.states = [];
+                vm.numbers = [];
+                vm.titles = [];
+                console.log(res);
+                for (var i =  0; i < res.data.length; i++) {
+                    console.log(res.data[i].number);
+                    console.log(res.data[i].title);
+
+                    vm.titles.push(res.data[i].title); 
+                    vm.title = vm.titles || 'NOT';
+
+                    vm.numbers.push(res.data[i].number); 
+                    vm.number = vm.numbers || 'NOT';
                 }
         })
     }
@@ -387,3 +442,20 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         }else{
                             alert("its NOT between");
                         }    */
+
+    vm.thisIssue = function(number) {
+    console.log(number);
+    vm.following_url = number;
+    }
+
+    vm.CloseIssue = function(number, userLogin, repoName) {
+       var config;
+       var issueState = 'closed';
+       config = { headers: { 'Content-Type': 'application/json'}}
+       console.log(number);
+
+        $http.post('https://api.github.com/repos/' + userLogin + '/Automatiseren-bachelorproef-2016/issues/' + number + AccessToken, {"state":issueState}, config).then(function(res){
+        });
+   }
+
+});

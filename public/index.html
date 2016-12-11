@@ -27,11 +27,13 @@
                         </div>
                         <div class="media-body right-body">
                             <p>Stagebedrijf:<br> Microsoft</p>
-                            <p>Promotors:<br> Tim Dams<br> </p>                            
+                            <p>Promotors:<br> Tim Dams<br> </p>
                         </div>
                         <div class="pull-right btn-body">
                             <button type="submit" ng-click="vm.GetTheLog(vm.owner, vm.name)" class="btn btn-default ">Check Log</button>
                             <button type="submit" id="show" onclick="myFunction()" ng-click="vm.GetRepos(loginEl.loginName)" class="btn btn-info ">Repository</button>
+                            <!-- <button type="submit" class="btn btn-link ">Edit</button> -->
+                            <button type="submit" ng-click="vm.GetIssues(loginEl)" class="btn btn-default ">Scriptie</button>
                         </div>
                     </div>
                 </div> <!-- close Jumbotron -->
@@ -113,7 +115,14 @@
                     </div>
                     <div class="col-sm-6 pull-right">
                     <p ng-repeat="messageName in vm.message">Name message: {{messageName}}</p>
+                    <div class="col-sm-2 pull-left">
+                    <p ng-repeat="numberEl in vm.number track by $index" ng-click="vm.thisIssue(numberEl)" >Number: {{numberEl}}</p>
                     </div>
+
+                    <div class="col-sm-10 pull-right">
+                    <p ng-repeat="titleEl in vm.title track by $index">Title: {{titleEl}}</p>
+                    </div>
+
                 </div>
                 <div ng-bind-html= "vm.CONTENT" ng-mouseup="vm.showSelectedText()">
 
@@ -133,14 +142,14 @@
             <div class="col-md-3 interactiedeel">
                 <form class="navbar-form navbar-right" role="search">
                     <div class="form-group">
-                        <input id="lol" type="text" ng-model="loginEl" class="form-control" placeholder="Find student" style="width: 142.5%;">
+                        <input id="issuetitle" type="text" ng-model="loginEl" class="form-control" placeholder="Find student" style="width: 142.5%;">
                     </div>
-                      <textarea id="comments" type="text" rows="10" cols="58" placeholder="Write your comments." style="margin-top: 10px;"></textarea>
+                      <textarea id="comments issues" type="text" rows="10" cols="58" placeholder="Write your comments." style="margin-top: 10px;"></textarea>
                       <button id="PostCom" type="submit" class="btn btn-success" style="width: 84%; margin-top: 3px;" ng-click="vm.PostComments(vm.starred_url, vm.owner, vm.name)">Comment commit</button>
                       <button type="submit" class="btn btn-success" style="width: 84%; margin-top: 3px;" ng-click="vm.PostCommentScription(vm.owner)">Comment scription</button>
-                     <!-- <button type="submit" class="btn btn-info" style="width: 84%; margin-top: 3px;">Mark</button> 
-                     <button type="submit" class="btn btn-info" style="width: 84%; margin-top: 3px;">Create issue</button>
-                     <button type="submit" class="btn btn-info" style="width: 84%; margin-top: 3px;">Close issue</button> -->
+
+                     <button ng-click="vm.PostIssues(vm.owner)" type="submit" class="btn btn-info" style="width: 84%; margin-top: 3px;">Create issue</button>
+                     <button ng-click="vm.CloseIssue(vm.following_url, vm.owner, vm.name)" type="submit" class="btn btn-info" style="width: 84%; margin-top: 3px;">Close issue</button>
 
                     <div class="form-group">
                         <label for="newLabel" style="margin-top: 10px;">Label name:</label>
