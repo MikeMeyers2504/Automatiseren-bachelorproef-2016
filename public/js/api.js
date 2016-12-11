@@ -1,8 +1,8 @@
 var app = angular.module('myApp');
-var AuthToken = 
-var AccessToken = 
-var Login = "https://github.com/login/oauth/authorize"
-var logged;
+//var AuthToken = 
+//var AccessToken = 
+//var Login = "https://github.com/login/oauth/authorize"
+//var logged;
 
 function myFunction() {
     document.getElementById("hide1").style.visibility = 'visible';
@@ -20,10 +20,10 @@ var accessToken = "?access_token=...";
 app.controller('MainCtrl', function($scope, $http, $sce) {
     var vm = this;
     
-    vm.Login = function(){
+    /*vm.Login = function(){
         window.location.replace(Login + AuthToken);
         logged = true;
-    }
+    }*/
 
     // if (logged != true) {
     //    vm.Login();
@@ -42,7 +42,6 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     vm.ShowData = function(){
         var i;
         $http.get('https://api.github.com/orgs/AP-Elektronica-ICT/members' + accessToken + '&page=1&per_page=100&role=member').then(function(res){ 
-
                 vm.studentNames = [];
                 vm.LoginNames = [];
                 for (i = 0; i < res.data.length; i++) {
@@ -89,8 +88,6 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                 console.log(date);
                 console.log(mydate)
                 var c = parseInt((date - mydate) / (1000*60*60*24) + 1);
-
-                var color;
 
                 if (c < 7) {
                     var index = vm.LoginNames.indexOf(userLogin);
@@ -212,13 +209,13 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         var IssueText;
         var config;
         IssueTitle = document.getElementById("issuetitle").value;
-        IssueText = document.getElementById("issues").value;
+        IssueText = document.getElementById("comments").value;
         config = { headers: { 'Content-Type': 'application/json'}}
 
         if (IssueText != '' && IssueTitle != '') {
-            $http.post('https://api.github.com/repos/'+ userLogin + '/Automatiseren-bachelorproef-2016/issues' + AuthToken, {'body': IssueText, 'title': IssueTitle}, config).then(function(res){
+            $http.post('https://api.github.com/repos/'+ userLogin + '/Automatiseren-bachelorproef-2016/issues' + accessToken, {'body': IssueText, 'title': IssueTitle}, config).then(function(res){
             console.log(res);
-            document.getElementById("issues").value = "";
+            document.getElementById("comments").value = "";
             document.getElementById("issuetitle").value = "";
             });
         }
@@ -273,7 +270,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     vm.GetIssues = function(userLogin){
         var found = false;
         vm.loading = true;
-        $http.get('https://api.github.com/repos/'+ userLogin + '/Automatiseren-bachelorproef-2016/issues' + AuthToken + '&state=open').then(function(res){
+        $http.get('https://api.github.com/repos/'+ userLogin + '/Automatiseren-bachelorproef-2016/issues' + accessToken + '&state=open').then(function(res){
                 vm.states = [];
                 vm.numbers = [];
                 vm.titles = [];
@@ -333,7 +330,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                     $http.get('https://api.github.com/repos/' + userLogin + '/' + repoName +'/git/blobs/' + vm.shaLog + accessToken, ChangeHeaders).then(function(res){
                         console.log(res);
                         vm.contentLog = res.data;
-                        $http.get('https://api.github.com/repos/' + userLogin + '/' + repoName + '/commits?path=LOG.md&' + accessToken).then(function(res){
+                        $http.get('https://api.github.com/repos/' + userLogin + '/' + repoName + '/commits' + accessToken + '&path=LOG.md').then(function(res){
                         console.log(res);
                         console.log(res.data[0].commit.author.date);
                         vm.LatestCommitDate = res.data[0].commit.author.date;
@@ -344,7 +341,6 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         var day = LatestCommitDateWithout.slice(8, 10);
                         vm.exactDate = day + '/' + month + '/' + year;
                         console.log(vm.exactDate);
-
                         })
 
                         //dit is voor een stuk deel van de .md te verkrijgen
@@ -352,12 +348,11 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         /*var subStr = vm.contentLog.substring(vm.contentLog.indexOf("## Week"), vm.contentLog.indexOf("The End")-4)
                         console.log(subStr);*/
 
-                        var subStr = vm.contentLog.substring(vm.contentLog.lastIndexOf("## Week"), vm.contentLog.indexOf("The End")-5)
-                        console.log(subStr);
+                        vm.LogParsedContent = vm.contentLog.substring(vm.contentLog.lastIndexOf("## Week"), vm.contentLog.indexOf("The End")-5)
 
                         Converter = new showdown.Converter();
-                        LogHTML = Converter.makeHtml(vm.contentLog);
-                        $scope.vm.contentLog = $sce.trustAsHtml(LogHTML);
+                        LogHTML = Converter.makeHtml(vm.LogParsedContent);
+                        $scope.vm.LogParsedContent = $sce.trustAsHtml(LogHTML);
                     })
                 }
         })
@@ -376,6 +371,21 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
       }
       return text;
     };
+
+    vm.thisIssue = function(number) {
+    console.log(number);
+    vm.following_url = number;
+    }
+
+    vm.CloseIssue = function(number, userLogin, repoName) {
+       var config;
+       var issueState = 'closed';
+       config = { headers: { 'Content-Type': 'application/json'}}
+       console.log(number);
+
+        $http.post('https://api.github.com/repos/' + userLogin + '/Automatiseren-bachelorproef-2016/issues/' + number + accessToken, {"state":issueState}, config).then(function(res){
+        });
+    }
 
     /*vm.PostCommentScriptionHighlighted = function(userLogin) {
         var date = new Date();
@@ -442,20 +452,3 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         }else{
                             alert("its NOT between");
                         }    */
-
-    vm.thisIssue = function(number) {
-    console.log(number);
-    vm.following_url = number;
-    }
-
-    vm.CloseIssue = function(number, userLogin, repoName) {
-       var config;
-       var issueState = 'closed';
-       config = { headers: { 'Content-Type': 'application/json'}}
-       console.log(number);
-
-        $http.post('https://api.github.com/repos/' + userLogin + '/Automatiseren-bachelorproef-2016/issues/' + number + AccessToken, {"state":issueState}, config).then(function(res){
-        });
-   }
-
-});
