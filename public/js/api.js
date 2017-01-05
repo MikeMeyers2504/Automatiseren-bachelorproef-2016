@@ -31,8 +31,8 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         })
     }*/
 
-    var AuthToken = "?client_id=";
-    var ClientId = "?client_id=";
+    var AuthToken = "";
+    var ClientId = "";
     $scope.Login = function(){
         window.location.replace(Login + ClientId);
         /*$http.get('https://github.com/login/oauth/authorize' + AuthToken).then(function(res){ 
@@ -126,11 +126,29 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         $http.get('https://api.github.com/users/' + userLogin.GitName + AuthToken).then(function(res){ 
                             userLogin.Avatar = res.data.avatar_url;
                         })
-                    });
+                        $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/commits' + accessToken + '&path=Logfiles/LOG.md').then(function(res){
+                            console.log(res);
+                            console.log(res.data[0].commit.author.date);
+                            $scope.LatestCommitDate = res.data[0].commit.author.date;
+                            var LatestCommitDateWithout = $scope.LatestCommitDate.substring(0,10);
+                            console.log(LatestCommitDateWithout);
+                            var year = LatestCommitDateWithout.slice(0, 4);
+                            var month = LatestCommitDateWithout.slice(5, 7);
+                            var day = LatestCommitDateWithout.slice(8, 10);
+                            $scope.exactDate = day + '/' + month + '/' + year;
+                            console.log($scope.exactDate);
+                            userLogin.CommitLogDate = $scope.exactDate;
+                        })
+                        $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + accessToken).then(function(res){
+                            console.log(res);
+                            console.log(res.data.open_issues);
+                            userLogin.Open_issues = res.data.open_issues;
+                        });
                 });
                 $scope.login.push(userLogin);
                 console.log($scope.login);
             })
+        })
         }
 
     $scope.GetTheLog = function(userLogin) {
@@ -159,7 +177,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                     $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/git/blobs/' + $scope.shaLog + accessToken, ChangeHeaders).then(function(res){
                         console.log(res);
                         $scope.contentLog = res.data;
-                        $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/commits' + accessToken + '&path=Logfiles/LOG.md').then(function(res){
+                        /*$http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/commits' + accessToken + '&path=Logfiles/LOG.md').then(function(res){
                             console.log(res);
                             console.log(res.data[0].commit.author.date);
                             $scope.LatestCommitDate = res.data[0].commit.author.date;
@@ -170,7 +188,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                             var day = LatestCommitDateWithout.slice(8, 10);
                             $scope.exactDate = day + '/' + month + '/' + year;
                             console.log($scope.exactDate);
-                        })
+                        })*/
                         $scope.LogParsedContent = $scope.contentLog.substring($scope.contentLog.lastIndexOf("## Week"), $scope.contentLog.indexOf("The End")-5);
                         Converter = new showdown.Converter();
                         LogHTML = Converter.makeHtml($scope.LogParsedContent);
@@ -197,6 +215,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         $scope.owner = userLogin.userName;
                         $scope.ownerWithSpace = userLogin.FullnameSpace;
                         found = true;
+                        $scope.GetCommits(userLogin.userName);
                     } 
                 }
                 if (found == false) {
