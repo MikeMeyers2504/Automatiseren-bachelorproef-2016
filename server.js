@@ -37,6 +37,7 @@ app.get('/studenteninfo/:id', function (req, res) {
   db.studenteninfo.findOne({_id: mongojs.ObjectId(id)}, function (err, doc) {
     res.json(doc);
   });
+  
 });
 
 app.put('/studenteninfo/:id', function (req, res) {
