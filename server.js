@@ -4,12 +4,32 @@ var mongojs = require('mongojs');
 var db = mongojs('studenteninfo', ['studenteninfo']);
 var bodyParser = require('body-parser');
 
+const https = require('https');
+var fullUserCode;
+
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 
+app.post('/TokenExchange', function (req, res) {
+  //console.log(req.headers.referer);
+  var URL = req.headers.referer;
+  var code = URL.substring(28, URL.indexOf('=') + 21);
+  //console.log(code);
+
+  https.get('https://github.com/login/oauth/access_token' + AuthToken + '&code=' + code, (res) => {
+
+    res.on('data', (d) => {
+      var fullUserCode = process.stdout.write(d);
+      console.log(fullUserCode);
+    });
+
+    }).on('error', (e) => {
+      console.error(e);
+  });
+});
+
 app.get('/studenteninfo', function (req, res) {
   console.log('I received a GET request');
-
   db.studenteninfo.find(function (err, docs) {
     console.log(docs);
     res.json(docs);

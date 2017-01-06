@@ -2,17 +2,7 @@ var app = angular.module('myApp');
 var VolledigeNaam;
 var Login = "https://github.com/login/oauth/authorize";
 
-function myFunction() {
-    document.getElementById("hide1").style.visibility = 'visible';
-}
-
-$(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip({
-        placement : 'top'
-    });
-});
-
-var accessToken = "?access_token=";
+var TokenExchanged = false;
 
 app.controller('MainCtrl', function($scope, $http, $sce) {
     var login;
@@ -26,19 +16,27 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         $http.get('https://api.github.com/users/' + user.name).then(function(res){
                 console.log(res);
                 $scope.username = res.data.name || "Not found";
-                $scope.login = res.data.login || "Not found";
+                $scope.login = res.data.login || "Not found";   
                 $scope.loading = false;
         })
     }*/
 
-    var AuthToken = "";
-    var ClientId = "";
     $scope.Login = function(){
         window.location.replace(Login + ClientId);
-        /*$http.get('https://github.com/login/oauth/authorize' + AuthToken).then(function(res){ 
+        /*$http.get('https://api.github.com/login/oauth/authorize' + AuthToken).then(function(res){ 
             console.log(res);
         })*/
     }
+
+    $scope.code = function(){
+        currentURL = window.location.href;
+        console.log(currentURL);
+        //http://localhost:3000/?code=d41699c717253b94ac80
+        LoginCode = currentURL.substring(28, currentURL.indexOf('=') + 21);
+        console.log(LoginCode);
+        $http.post('/TokenExchange', $scope.LoginCode);
+    }
+    $scope.code();
 
     $scope.ShowData = function(){
         var i;
@@ -55,11 +53,11 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         $scope.GetDates(newUser);
                     };
                 }
-                currentURL = window.location.href;
-                console.log(currentURL);
-                //http://localhost:3000/?code=d41699c717253b94ac80
-                LoginCode = currentURL.substring(28, currentURL.indexOf('=') + 21);
-                console.log(LoginCode);
+                // currentURL = window.location.href;
+                // console.log(currentURL);
+                // //http://localhost:3000/?code=d41699c717253b94ac80
+                // LoginCode = currentURL.substring(28, currentURL.indexOf('=') + 21);
+                // console.log(LoginCode);
                 //$scope.GetAccessToken();
                 console.log($scope.login);
                 console.log($scope.FullNamesStudents);
@@ -77,8 +75,6 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
             console.log(accessToken);
         })
     }*/
-
-    console.log(LoginCode);
 
     $scope.GetDates = function(userLogin){
         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/commits' + AuthToken).then(function(res){
@@ -149,7 +145,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                 console.log($scope.login);
             })
         })
-        }
+    }
 
     $scope.GetTheLog = function(userLogin) {
         var found = false;
@@ -206,10 +202,9 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                 for (var i =  0; i < res.data.length; i++) {
                     if (res.data[i].name.indexOf("BAP1617_" + userLogin.userName)!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1 //indexOf("do_ex1_")
                         console.log(res.data[i].name);
-                        console.log(res.data[i].id);
                         console.log(res.data[i].open_issues);
-                        $scope.sha = null;
-                        $scope.message = null;
+                        //$scope.sha = null;
+                        //$scope.message = null;
                         $scope.name = res.data[i].name;
                         $scope.open_issues = res.data[i].open_issues;
                         $scope.owner = userLogin.userName;
@@ -222,11 +217,10 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                     $scope.name = null;
                     $scope.open_issues = null;
                     $scope.owner = null;
-                    $scope.sha = null;
-                    $scope.message = null;
+                    //$scope.sha = null;
+                    //$scope.message = null;
                     $scope.ownerWithSpace = null;
                     //$scope.CONTENT = null;
-                    document.getElementById("hide1").style.visibility = 'hidden';
                     alert('No BAP repo found');
                     console.log(found);
                 }
@@ -238,7 +232,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     $scope.GetCommits = function(userLogin){
         var found = false;
         $scope.loading = true;
-      $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/commits' + accessToken).then(function(res){
+        $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/commits' + accessToken).then(function(res){
                 $scope.messageNames = [];
                 console.log(res);
                 for (var i =  0; i < res.data.length; i++) {
@@ -260,41 +254,23 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     }
 
     $scope.GoToTextarea = function(index) {
-        document.getElementById("comments").focus();  
+        document.getElementById("commentCommit").focus();  
         console.log(index);
-        shacode  = $scope.commits[index];
-        console.log(shacode);
-        $scope.starred_url = shacode;
+        $scope.shacode = $scope.commits[index];
+        console.log($scope.shacode);
     }
 
     $scope.PostComments = function(shacode, userLogin) {
         var CommentInfo;
         var config;
         console.log(shacode);
-        CommentInfo = document.getElementById("comments").value;
+        CommentInfo = document.getElementById("commentCommit").value;
         config = { headers: { 'Content-Type': 'application/json'}}
         if (CommentInfo != '') {
             $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/commits/' + shacode + '/comments' + accessToken, {'body': CommentInfo}, config).then(function(res){
             console.log(res);
-            document.getElementById("comments").value = "";
+            document.getElementById("commentCommit").value = "";
               });
-        }
-    }
-
-    $scope.PostIssues = function(userLogin) {
-        var IssueTitle;
-        var IssueText;
-        var config;
-        IssueTitle = document.getElementById("issuetitle").value;
-        IssueText = document.getElementById("comments").value;
-        config = { headers: { 'Content-Type': 'application/json'}}
-
-        if (IssueText != '' && IssueTitle != '') {
-            $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': IssueText, 'title': IssueTitle}, config).then(function(res){
-            console.log(res);
-            document.getElementById("comments").value = "";
-            document.getElementById("issuetitle").value = "";
-            });
         }
     }
 
@@ -362,24 +338,63 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         })
     }
 
+    $scope.PostIssuesRepo = function(userLogin) {
+        var IssueTitle;
+        var IssueText;
+        var config;
+        IssueTitle = document.getElementById("issuetitleRepo").value;
+        IssueText = document.getElementById("commentCommit").value;
+        config = { headers: { 'Content-Type': 'application/json'}}
+        if (IssueText != '' && IssueTitle != '') {
+            $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': IssueText, 'title': IssueTitle}, config).then(function(res){
+            console.log(res);
+            document.getElementById("commentCommit").value = "";
+            document.getElementById("issuetitleRepo").value = "";
+            });
+        }
+        else {
+            alert("Comment area of titel area is leeg!");
+        }
+    }
+
+    $scope.PostIssues = function(userLogin) {
+        var IssueTitle;
+        var IssueText;
+        var config;
+        IssueTitle = document.getElementById("issuetitleIssue").value;
+        IssueText = document.getElementById("commentIssue").value;
+        config = { headers: { 'Content-Type': 'application/json'}}
+        if (IssueText != '' && IssueTitle != '') {
+            $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': IssueText, 'title': IssueTitle}, config).then(function(res){
+            console.log(res);
+            document.getElementById("commentIssue").value = "";
+            document.getElementById("issuetitleIssue").value = "";
+            });
+        }
+        else {
+            alert("Comment area of titel area is leeg!");
+        }
+    }
+
     $scope.PostCommentScription = function(userLogin) {
         var date = new Date();
         var dateInNumbers = date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear()
         console.log(dateInNumbers);
         var config;
         var IssueBody;
-        IssueBody = document.getElementById("comments").value;
+        IssueBody = document.getElementById("commentSciptie").value;
         config = { headers: { 'Content-Type': 'application/json'}}
         if (IssueBody != '') {
            $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': IssueBody, 'title': "Scriptie feedback " + dateInNumbers}, config).then(function(res){
            console.log(res);
-           document.getElementById("comments").value = "";
+           document.getElementById("commentSciptie").value = "";
            });
         }
     }
 
     $scope.showSelectedText = function() {
         $scope.selectedText =  $scope.getSelectionText();
+        console.log($scope.selectedText);
     };
 
     $scope.getSelectionText = function() {
@@ -396,29 +411,29 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         console.log($scope.selectedText);
         var config;
         var IssueBody;
-        IssueBody = document.getElementById("comments").value;
+        IssueBody = document.getElementById("commentSciptie").value;
         config = { headers: { 'Content-Type': 'application/json'}}
         if (IssueBody != '') {
            $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': "Comment: " + IssueBody + " / highlighted text: " + $scope.selectedText, 'title': "Scriptie feedback highlighted text"}, config).then(function(res){
            console.log(res);
-           document.getElementById("comments").value = "";
+           document.getElementById("commentSciptie").value = "";
            });
         }
     }
 
     $scope.thisIssue = function(number) {
-    console.log(number);
-    $scope.following_url = number;
+        console.log(number);
+        $scope.issueNumber = $scope.numbers[number];
     }
 
     $scope.CloseIssue = function(number, userLogin) {
-       var config;
-       var issueState = 'closed';
-       config = { headers: { 'Content-Type': 'application/json'}}
-       console.log(number);
-       $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues/' + number + accessToken, {"state":issueState}, config).then(function(res){
+        var config;
+        var issueState = 'closed';
+        config = { headers: { 'Content-Type': 'application/json'}}
+        console.log(number);
+        $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues/' + number + accessToken, {"state":issueState}, config).then(function(res){
             console.log(res);
-       });
+        });
     }
 
     $scope.NotificationsOn = function(userLogin) {
@@ -449,9 +464,6 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
 });
 
 // promotor uit readme file halen en dan studenten filteren op basis van promotor en dan weergeven na de login (username van de promotor) 
-
-// How to hide all of the keys?
-
 //grafiek van iedereen waarvoor je promotor bent en dan de deadlines erin zetten en checken wie da al gedaan heeft en wie niet 
 
 //voor onze login als leerkrachten maken we allebei effe een extra acount aan op login en dan gebruiken we die als leerkrachten 
