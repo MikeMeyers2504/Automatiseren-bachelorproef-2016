@@ -16,11 +16,12 @@ app.post('/TokenExchange', function (req, res) {
   var code = URL.substring(28, URL.indexOf('=') + 21);
   //console.log(code);
 
-  https.get('https://github.com/login/oauth/access_token' + AuthToken + '&code=' + code, (res) => {
+  https.get('https://github.com/login/oauth/access_token' + AuthToken + '&code=' + code, (resGithub) => {
 
-    res.on('data', (d) => {
+    resGithub.on('data', (d) => {
       var fullUserCode = process.stdout.write(d);
       console.log(fullUserCode);
+      res.json({token: d});
     });
 
     }).on('error', (e) => {
