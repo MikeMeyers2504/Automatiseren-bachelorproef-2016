@@ -3,14 +3,13 @@ var VolledigeNaam;
 var Login = "https://github.com/login/oauth/authorize";
 
 var accessToken;
-var myAccessToken = "";
-var AuthToken = "";
-var ClientId = "";
+var AuthToken = 
+var ClientId = 
 var TokenExchanged = false;
-var FullUserCode;
-var UserCode;
+var FullUserCode = null;
+var UserCode = null;
 var LoginCode;
-//var scopes = "&scope=admin:org user repo"; 
+var scopes = "&scope=admin:org user repo"; 
 
 app.controller('MainCtrl', function($scope, $http, $sce) {
     var login;
@@ -33,43 +32,56 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     }*/
 
     $scope.Login = function(){
-        window.location.replace(Login + ClientId/* + scopes*/);
+        window.location.replace(Login + ClientId + scopes);
     }
 
-    $scope.pres = function(){
-        console.log(FullUserCode);
+    $scope.GetUrl = function(){
+    	console.log("Retreiving URL");
+    	currentURL = window.location.href;
+        console.log(currentURL);
+        //http://localhost:3000/?GetToken=d41699c717253b94ac80
+        LoginCode = currentURL.substring(28, currentURL.indexOf('=') + 21);
+        console.log(LoginCode);
+    }
+
+    $scope.GetUrl();
+
+    $scope.GetToken = function(){
+    	console.log("Going to get your token, please stand by");
+        console.log(LoginCode);
+        $http.post('/TokenExchange', $scope.LoginCode).success(function(response){
+        	console.log("I have gotten your token, it is a bit large though ...... that's what she said");
+            FullUserCode = response.token;
+            //UserCode = FullUserCode.substring(0, response.indexOf('&')+53);
+            console.log(FullUserCode);
+
+            $scope.FilterToken();
+        });
+    }
+
+    $scope.FilterToken = function(){
+    	console.log("Filtering your token, snip snip snip");
         UserCode = FullUserCode.substring(0, FullUserCode.indexOf('&'));
-        console.log(FullUserCode);
         console.log(UserCode);
-        $http.get('https://api.github.com/user?' + FullUserCode).then(function(res){
+        accessToken = "?" + UserCode;
+
+        $scope.GetUserName();
+        $scope.ShowData();
+    }
+
+    $scope.GetUserName = function(){
+    	console.log("Spying on your profile ... I know your name ");
+    	$http.get('https://api.github.com/user?' + FullUserCode).then(function(res){
             console.log("++++++++++++++++++++++++++++++++");
             console.log(res);
             console.log(res.data.name);
             $scope.LoginName = res.data.name;
             console.log("++++++++++++++++++++++++++++++++");
         });
-        accessToken = "?" + UserCode;
-        $scope.ShowData();
     }
-
-    $scope.code = function(){
-        currentURL = window.location.href;
-        console.log(currentURL);
-        //http://localhost:3000/?code=d41699c717253b94ac80
-        LoginCode = currentURL.substring(28, currentURL.indexOf('=') + 21);
-        console.log(LoginCode);
-        $http.post('/TokenExchange', $scope.LoginCode).success(function(response){
-            console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
-            console.log(response);
-            FullUserCode = response.token;
-            //UserCode = FullUserCode.substring(0, response.indexOf('&')+53);
-            console.log("in response " + FullUserCode);
-        });
-    }
-
-    $scope.code();
 
     $scope.ShowData = function(){
+    	console.log("Showing all your requested data");
         var i;
         $http.get('https://api.github.com/orgs/MyOrg1617/repos' + AuthToken).then(function(res){ 
                 $scope.login = [];
@@ -91,9 +103,8 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         })
     }
 
-    //$scope.ShowData();
-
     $scope.GetDates = function(userLogin){
+    	console.log("Getting the dates and a lot of other stuff");
         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/commits' + AuthToken).then(function(res){
                 console.log(res);
                 $scope.dates = [];
@@ -139,7 +150,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         $http.get('https://api.github.com/users/' + userLogin.GitName + AuthToken).then(function(res){ 
                             userLogin.Avatar = res.data.avatar_url;
                         })
-                        $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/commits' + myAccessToken + '&path=Logfiles/LOG.md').then(function(res){
+                        $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/commits' + accessToken + '&path=Logfiles/LOG.md').then(function(res){
                             console.log(res);
                             console.log(res.data[0].commit.author.date);
                             $scope.LatestCommitDate = res.data[0].commit.author.date;
@@ -152,7 +163,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                             console.log($scope.exactDate);
                             userLogin.CommitLogDate = $scope.exactDate;
                         })
-                        $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + myAccessToken).then(function(res){
+                        $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + accessToken).then(function(res){
                             console.log(res);
                             console.log(res.data.open_issues);
                             userLogin.Open_issues = res.data.open_issues;
@@ -455,6 +466,10 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         $http.put('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/subscription' + accessToken, {'subscribed': false, "ignored": true}, config).then(function(res){
             console.log(res);
         });
+    }
+
+    if (LoginCode.length >= 10) {
+    	$scope.GetToken();
     }
 
     /*$scope.submitEmail = function() {
