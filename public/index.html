@@ -59,6 +59,7 @@
                         <td>{{student.name}}</td>
                         <td>{{student.label}}</td>
                         <td>{{student.data}}</td>
+                        <td>{{loginEl.FullName}}</td>
                         <td><button class="btn btn-danger" ng-click="remove(student._id)">Remove</button></td>
                         <td><button class="btn btn-warning" ng-click="edit(student._id)">Edit</button></td>
                     </tr>
@@ -100,8 +101,9 @@
             <form class="navbar-form navbar-right" role="search">
                 <div class="form-group">
                     <input type="text" ng-model="loginEl" class="form-control" placeholder="Find student" style="width:80%;">
-                    <button ng-click="Login(); LOGIN=true" ng-show="!LOGIN">Login</button>
+                    <button ng-click="Login(); LOGIN=true;" ng-show="!LOGIN">Login {{LoginName}}</button>
                     <button ng-click="Login(); LOGIN=false" ng-show="LOGIN">Logout</button>
+                    <button ng-click="pres(); LOGIN=false">Get access token</button>
                 </div>
 
                 <input id="issuetitleIssue" type="text" ng-show="ISSUES" class="form-control" placeholder="Issue Titel" style="width: 90%; margin-top: 10px;">

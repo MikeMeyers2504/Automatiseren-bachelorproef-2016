@@ -3,7 +3,8 @@ var app = express();
 var mongojs = require('mongojs');
 var db = mongojs('studenteninfo', ['studenteninfo']);
 var bodyParser = require('body-parser');
-fhhhf
+var AuthToken = "";
+var ClientId = "";
 const https = require('https');
 var fullUserCode;
 
@@ -11,17 +12,15 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 
 app.post('/TokenExchange', function (req, res) {
-  //console.log(req.headers.referer);
   var URL = req.headers.referer;
   var code = URL.substring(28, URL.indexOf('=') + 21);
-  //console.log(code);
 
   https.get('https://github.com/login/oauth/access_token' + AuthToken + '&code=' + code, (resGithub) => {
 
     resGithub.on('data', (d) => {
       var fullUserCode = process.stdout.write(d);
-      console.log(fullUserCode);
-      res.json({token: d});
+      console.log(d.toString());
+      res.json({token: d.toString()});
     });
 
     }).on('error', (e) => {
