@@ -12,21 +12,21 @@
 </head>
 
 <body ng-controller="MainCtrl">
-<div ng-controller='AppCtrl'> 
+<div> 
     <div class="row">
-        <div class="col-xs-4 studentendeel">
-            <div class="jumbotron" ng-repeat="loginEl in login | filter:loginEl | filter:loginEl.BAPPromotor">
+        <div class="col-md-4 studentendeel">
+            <div class="jumbotron" ng-repeat="loginEl in login | filter:loginEl">
                 <div class="media"">
                     <div class="media-left" style="width: 100px; height: 100px;">
                         <img class="media-object" width="auto" height="100%" ng-src="{{loginEl.Avatar}}" alt="GoenSkwat @ GRK">
                     </div>
                     <div class="media-body left-body">
                         <p>
+                            <a ng-click="GetStudentInfo(loginEl); $parent.INFO=true; $parent.REPOSI=false; $parent.LOG=false; $parent.ISSUES=false; $parent.SCRIPT=false" href="#" style="text-decoration: none; font-size: 1.3em; color: black;"><!-- info -->{{loginEl.FullnameSpace}}</a>
+
                             <span id="bol" class="glyphicon glyphicon-certificate" ng-class="{'green': (loginEl.daysSinceLastCommit <= 7), 'orange': (loginEl.daysSinceLastCommit > 7 && loginEl.daysSinceLastCommit <= 14), 'red': (loginEl.daysSinceLastCommit > 14)}">
-                            </span>
-                            {{ loginEl.FullnameSpace }}
-                            (<a ng-click="$parent.INFO=true; $parent.REPOSI=false; $parent.LOG=false; $parent.ISSUES=false; $parent.SCRIPT=false" href="#">info</a>) 
-                            <br>
+                            </span> <br>
+
                             <a target="_blank" href="{{loginEl.site}}">Link repo</a> 
                         </p>  
                         <p>Open Issues: <a ng-click="GetIssues(loginEl); $parent.ISSUES=true; $parent.INFO=false; $parent.REPOSI=false; $parent.LOG=false; $parent.SCRIPT=false" href="#">{{loginEl.Open_issues}}</a>
@@ -51,54 +51,103 @@
             </div> <!-- close Jumbotron -->
         </div>
 
-        <div class="col-xs-5 datadeel">
-            <h1>Student Information</h1><br>
+        <div class="col-md-5 datadeel">
+            <h1 ng-show="INFO">Student Information</h1><br>
             <h4 ng-if="loading === true">Gelieve even te wachten, pagina is aan het laden.</h4><br>
             <h4 ng-if="loading === true">Deze website is mede mogelijk gemaakt door Kayode en Mike :D</h4><br>
             <h4 ng-if="error === true">Gelieve eerst één aan te klikken.</h4><br>
             <table class="table" ng-show="INFO">
-                <tbody>
-                    <tr ng-repeat="student in studenteninfo">
-                        <td>{{student.name}}</td>
+                <tbody ng-repeat="HisData in ThisUser">
+                    <tr> 
+                        <td>Naam: </td> 
+                        <td>{{HisData.FullName}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr> 
+                        <td>Git naam: </td> 
+                        <td>{{HisData.GitName}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr> 
+                        <td>Naam repository: </td> 
+                        <td>{{HisData.RepoName}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr> 
+                        <td>Promotor: </td> 
+                        <td>{{HisData.BAPPromotor}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr> 
+                        <td>Tel: </td> 
+                        <td>{{HisData.Phone}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr> 
+                        <td>Adres: </td> 
+                        <td>{{HisData.Address}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr> 
+                        <td>Stageplaats: </td> 
+                        <td>{{HisData.Company}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody ng-repeat="student in FilterThisGuy">
+                    <tr>
                         <td>{{student.label}}</td>
                         <td>{{student.data}}</td>
-                        <td>{{loginEl.FullName}}</td>
-                        <td><button class="btn btn-danger" ng-click="remove(student._id)">Remove</button></td>
-                        <td><button class="btn btn-warning" ng-click="edit(student._id)">Edit</button></td>
+                        <td><button ng-repeat="HisData in ThisUser" class="btn btn-danger" ng-click="remove(student._id, HisData.FilteredRepoName)">Remove</button></td>
+                        <td><button ng-repeat="HisData in ThisUser" class="btn btn-warning" ng-click="edit(student._id, HisData.FilteredRepoName)">Edit</button></td>
                     </tr>
                 </tbody>
             </table>
 
             <div id="repo">
-                <div class="col-sm-10" ng-show="ISSUES">
-                    <p ng-repeat="titleEl in title track by $index" ng-click="thisIssue($index)">Title: {{titleEl}}</p>
+                <div ng-repeat="titleEl in title track by $index" class="col-sm-12" ng-show="ISSUES" style="display: block;">
+                    <button  ng-click="thisIssue($index)">Title: {{titleEl}}</button>
                 </div>
 
-                <div class="col-sm-6" ng-show="REPOSI"">
-                    <p ng-repeat="messageName in message track by $index" ng-click="GoToTextarea($index)">Name message: {{messageName}}</p>
+                <div ng-repeat="messageName in message track by $index" class="col-sm-12" ng-show="REPOSI" style="display: block;">
+                    <button  ng-click="GoToTextarea($index)">Name message: {{messageName}}</button>
                 </div>
 
                 <div ng-show="SCRIPT" ng-bind-html="CONTENT" ng-mouseup="showSelectedText()">
-                        {{CONTENT}} 
+                    <p>{{CONTENT}}</p> 
                 </div>
 
                 <div ng-bind="selectedText"></div>
                         
                 <div ng-show="LOG" ng-bind-html= "LogParsedContent" ng-mouseup="showSelectedText()">
-                        {{LogParsedContent}} 
+                    <p>{{LogParsedContent}}</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-xs-3 interactiedeel">
+        <div class="col-md-3 interactiedeel">
             <form class="navbar-form navbar-right" role="search">
                 <div class="form-group">
                     <input type="text" ng-model="loginEl.FullName" class="form-control" placeholder="Find student" style="width:80%;">
-                    <input type="text" name="widget.title" class="hidden" ng-value="loginEl.BAPPromotor=widget.title" readonly="" style="width: 100%;">
+                    <input type="text" name="widgetPromotor.title" class="hidden" ng-value="loginEl.BAPPromotor=widgetPromotor.title" readonly="" style="width: 100%;">
                     <button ng-click="Login()" ng-if="logged === false">Login</button>
                     <label ng-if="logged === true">Logged in as {{LoginName}}</label>
                     <button ng-click="Logout()" ng-if="logged === true">Logout</button>
                 </div>
+
                 <input id="issuetitleIssue" type="text" ng-show="ISSUES" class="form-control" placeholder="Issue Titel" style="width: 90%; margin-top: 10px;">
                 <input id="issuetitleRepo" type="text" ng-show="REPOSI" class="form-control" placeholder="Issue Titel" style="width: 90%; margin-top: 10px;">
 
@@ -117,6 +166,12 @@
                 <button ng-click="PostIssues(eigenaar)" type="submit" class="btn btn-info" ng-show="ISSUES" style="width: 90%; margin-top: 3px;">Create issue</button>
 
                 <button ng-click="CloseIssue(issueNumber, IssuesNameOwner)" type="submit" class="btn btn-info" ng-show="ISSUES" style="width: 90%; margin-top: 3px;">Close issue</button>
+
+                <div class="form-group hidden" ng-show="INFO">
+                    <label for="newName" style="margin-top: 10px;">name:</label>
+                    <input type="text" ng-value="student.name=widget.title" class="form-control" id="newName" readonly="" style="width: 100%;">
+                </div>
+
                 <div class="form-group" ng-show="INFO">
                     <label for="newLabel" style="margin-top: 10px;">Label name:</label>
                     <input type="text" ng-model="student.label" class="form-control" id="newLabel" placeholder="Label" style="width: 100%;">
@@ -127,10 +182,11 @@
                     <input type="text" ng-model="student.data" class="form-control" id="newData" placeholder="Data" style="width: 106%;">
                 </div>
 
-                <button type="submit" class="btn btn-success" ng-show="INFO" ng-click="addData()" style="margin-top: 10px; display: block;">Add Data</button>
+                <button type="submit" class="btn btn-success" ng-show="INFO" ng-repeat="HisData in ThisUser" ng-click="addData(HisData.FilteredRepoName)" style="margin-top: 10px; display: block;">Add Data</button>
 
                 <td ng-show="INFO">
-                    <button class="btn btn-info" ng-show="INFO" ng-click="update()">Update</button>&nbsp;&nbsp;<button class="btn btn-info" ng-show="INFO" ng-click="deselect()">Clear</button>
+                    <button class="btn btn-info" ng-show="INFO" ng-repeat="HisData in ThisUser" ng-model="student.name" ng-value="widget.title" ng-click="update(HisData.FilteredRepoName)">Update</button>&nbsp;&nbsp;
+                    <button class="btn btn-info" ng-show="INFO" ng-click="deselect()">Clear</button>
                 </td>
             </form>
         </div>
@@ -142,6 +198,6 @@
     <script src="js/bp.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/api.js"></script>
-    <script src="controllers/controller.js"></script>
+    <!-- <script src="controllers/controller.js"></script> -->
 </body>
 </html>

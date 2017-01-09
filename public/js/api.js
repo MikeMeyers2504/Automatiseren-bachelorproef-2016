@@ -1,11 +1,11 @@
+var ClientId ...
+
 var app = angular.module('myApp');
 var VolledigeNaam;
 var Login = "https://github.com/login/oauth/authorize";
 var Logout = "https://github.com/logout";
 
 var accessToken;
-var AuthToken = "?client_id=7e32dd77e238e8d45a05&client_secret=8fa4c0406a050476dbdfdce9bac0dec98130abcb";
-var ClientId = "?client_id=7e32dd77e238e8d45a05";
 var TokenExchanged = false;
 var FullUserCode = null;
 var UserCode = null;
@@ -15,43 +15,38 @@ var scopes = "&scope=admin:org user repo";
 app.controller('MainCtrl', function($scope, $http, $sce) {
     var login;
     var shacode;
-    //var LoginCode;
     var currentURL;
-    //var UserCode;
-    //var FullUserCode;
     var LoginName;
     $scope.loading = false;
     $scope.error = false;
     $scope.logged = false;
-    $scope.widget;
+    $scope.widgetPromotor;
 
     $scope.Login = function(){
         window.location.replace(Login + ClientId + scopes);
+    }
+    
+    $scope.Logout = function(){
+        window.location.replace(Logout);
     }
 
     $scope.GetUrl = function(){
     	console.log("Retreiving URL");
     	currentURL = window.location.href;
-        console.log(currentURL);
-        //http://localhost:3000/?GetToken=d41699c717253b94ac80
         LoginCode = currentURL.substring(28, currentURL.indexOf('=') + 21);
-        console.log(LoginCode);
     }
 
     $scope.GetUrl();
 
     $scope.GetToken = function(){
     	console.log("Going to get your token, please stand by");
-        console.log(LoginCode);
         $scope.loading = true;
+
         $http.post('/TokenExchange', $scope.LoginCode).success(function(response){
         	console.log("I have gotten your token, it is a bit large though ...... that's what she said");
             FullUserCode = response.token;
-            //UserCode = FullUserCode.substring(0, response.indexOf('&')+53);
-            console.log(FullUserCode);
 
             $scope.loading = false;
-
             $scope.FilterToken();
         });
     }
@@ -59,76 +54,62 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     $scope.FilterToken = function(){
     	console.log("Filtering your token, snip snip snip");
         UserCode = FullUserCode.substring(0, FullUserCode.indexOf('&'));
-        console.log(UserCode);
         accessToken = "?" + UserCode;
 
         $scope.GetUserName();
     }
 
     $scope.GetUserName = function(){
-    	console.log("Spying on your profile ... I know your name ");
-        $scope.loading = true;
+    	console.log("Spying on your profile ... ");
+    	$scope.loading = true;
+
     	$http.get('https://api.github.com/user?' + FullUserCode).then(function(res){
-            console.log("++++++++++++++++++++++++++++++++");
-            console.log(res);
-            console.log(res.data.name);
             $scope.LoginName = res.data.name;
-            console.log("++++++++++++++++++++++++++++++++");
+            console.log("I know your name " + $scope.LoginName);
+
+            $scope.LoginName = res.data.name;
             $scope.loading = false;
             $scope.ShowData();
-            $scope.widget = {title: $scope.LoginName};
+            $scope.widgetPromotor = {title: $scope.LoginName};
         });
-    }  
-
-    $scope.Logout = function(){
-        window.location.replace(Logout);
     }
 
     $scope.ShowData = function(){
     	console.log("Showing all your requested data");
+	    $scope.loading = true;
+
         var i;
-        $scope.loading = true;
-        $http.get('https://api.github.com/orgs/MyOrg1617/repos' + AuthToken).then(function(res){ 
+        $http.get('https://api.github.com/orgs/MyOrg1617/repos' + accessToken).then(function(res){ 
                 $scope.login = [];
                 $scope.Filterlogin = [];
+
                 $scope.FullNamesStudents = [];
                 for (i = 0; i < res.data.length; i++) {
                     var newRepo = res.data[i].name;
-                    console.log(newRepo); //repo naam
                     if (res.data[i].name.indexOf("BAP1617") !== -1) {
                         nameStudent = res.data[i].name.substring(8);
                         newUser = {userName: nameStudent, site: res.data[i].html_url, FullnameSpace: nameStudent.replace(/([A-Z])/g, ' $1').trim()};
-
-                        console.log("BIBIBIBIBBIIBIBBIBBIBIIBI");
-                        console.log(newUser); //name owner
-                        console.log("OPOPOPOPOPOPOOOPOOPOPOPOPOPO");
 
                         $scope.GetDates(newUser);
                     };
                 }
                 $scope.loading = false;
-                console.log($scope.login);
-                console.log($scope.FullNamesStudents);
         })
     }
 
     $scope.GetDates = function(userLogin){
-        $scope.error = false;
-    	console.log("Getting the dates and a lot of other stuff");
+    	console.log("Going through Mike's NSFW function ... please stand by");
+    	$scope.error = false;
         $scope.loading = true;
+
         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/commits' + accessToken).then(function(res){
-                console.log(res);
                 $scope.dates = [];
                 for (var i =  0; i < res.data.length; i++) {
-                    $scope.dates.push(
-                        res.data[i].commit.author.date
-                    );
+                    $scope.dates.push (
+                        res.data[i].commit.author.date );
                     $scope.date = $scope.dates[0] || "Not found";
                 }
-                console.log($scope.dates);
-                console.log($scope.date);
                 var newdate = $scope.date.slice(0,10);
-                console.log(newdate);
 
                 var q = new Date();
                 var m = q.getMonth();
@@ -138,18 +119,14 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                 var date = new Date(y,m,d);
 
                 mydate = new Date(newdate);
-                console.log(date);
-                console.log(mydate)
                 var c = parseInt((date - mydate) / (1000*60*60*24) + 1);
                 userLogin.daysSinceLastCommit = c;
 
                 $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/contents/Info.md' + accessToken).then(function(res){
-                    console.log(res);
                     var shaInfo = res.data.sha;
-                    console.log(shaInfo);
                     var Headers;
-
                     Headers = { headers: { 'Accept': 'application/vnd.github.3.raw'}}
+                    
                     $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/git/blobs/' + shaInfo + accessToken, Headers).then(function(res){
                         $scope.contentInfo = res.data;
                         userLogin.FullName = $scope.contentInfo.substring($scope.contentInfo.indexOf("<!---naam -->")+19, $scope.contentInfo.indexOf("<!---gitnaam -->"));
@@ -159,46 +136,40 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         userLogin.Phone = $scope.contentInfo.substring($scope.contentInfo.indexOf("<!---phone -->")+24, $scope.contentInfo.indexOf("<!---address -->"));
                         userLogin.Address = $scope.contentInfo.substring($scope.contentInfo.indexOf("<!---address -->")+25, $scope.contentInfo.indexOf("<!---company -->"));
                         userLogin.Company = $scope.contentInfo.substring($scope.contentInfo.indexOf("<!---company -->")+25, $scope.contentInfo.indexOf("<!---end -->"));
-
-                        $http.get('https://api.github.com/users/' + userLogin.GitName + AuthToken).then(function(res){ 
+                        $http.get('https://api.github.com/users/' + userLogin.GitName + accessToken).then(function(res){ 
                             userLogin.Avatar = res.data.avatar_url;
-                        });
+                        })
 
                         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/commits' + accessToken + '&path=Logfiles/LOG.md').then(function(res){
-                            console.log(res);
-                            console.log(res.data[0].commit.author.date);
                             $scope.LatestCommitDate = res.data[0].commit.author.date;
                             var LatestCommitDateWithout = $scope.LatestCommitDate.substring(0,10);
-                            console.log(LatestCommitDateWithout);
                             var year = LatestCommitDateWithout.slice(0, 4);
                             var month = LatestCommitDateWithout.slice(5, 7);
                             var day = LatestCommitDateWithout.slice(8, 10);
                             $scope.exactDate = day + '/' + month + '/' + year;
-                            console.log($scope.exactDate);
                             userLogin.CommitLogDate = $scope.exactDate;
-                        });
+                        })
 
                         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + accessToken).then(function(res){
-                            console.log(res);
-                            console.log(res.data.open_issues);
                             userLogin.Open_issues = res.data.open_issues;
                         });
                         $scope.loading = false;
-                        $scope.login.push(userLogin);
-                        console.log($scope.login);
-                }); 
+
+                    	$scope.login.push(userLogin);
+                });
             });
-        });
-    };
+        })
+    }
 
     $scope.GetTheLog = function(userLogin) {
         $scope.error = false;
-        var found = false;
         $scope.loading = true;
+        
+        var found = false;
         var ChangeHeaders;
         ChangeHeaders = { headers: { 'Accept': 'application/vnd.github.3.raw'}};
+        
         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/contents/Logfiles' + accessToken).then(function(res){
-                console.log(res.status)
                 for (var i =  0; i < res.data.length; i++) {
                     if (res.data[i].name.indexOf("LOG")!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1
                         $scope.nameLog = res.data[i].name;
@@ -211,13 +182,12 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                     $scope.contentLog = null;
                     $scope.nameLog = null;
                     $scope.shaLog = null;
-                    alert('Deze student heeft geen log file!');
+                    alert('No log file found!!!');
                     $scope.LogParsedContent = null;
                     $scope.loading = false;
                 }
                 else {
                     $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/git/blobs/' + $scope.shaLog + accessToken, ChangeHeaders).then(function(res){
-                        console.log(res);
                         $scope.contentLog = res.data;
                         $scope.LogParsedContent = $scope.contentLog.substring($scope.contentLog.lastIndexOf("## Week"), $scope.contentLog.indexOf("The End")-5);
                         Converter = new showdown.Converter();
@@ -233,12 +203,10 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         $scope.error = false;
         var found = false;
         $scope.loading = true;
+
         $http.get('https://api.github.com/orgs/MyOrg1617/repos' + accessToken).then(function(res){
-                console.log(res);
                 for (var i =  0; i < res.data.length; i++) {
                     if (res.data[i].name.indexOf("BAP1617_" + userLogin.userName)!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1 //indexOf("do_ex1_")
-                        console.log(res.data[i].name);
-                        console.log(res.data[i].open_issues);
                         //$scope.sha = null;
                         //$scope.message = null;
                         $scope.name = res.data[i].name;
@@ -250,6 +218,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                         $scope.loading = false;
                     } 
                 }
+
                 if (found == false) {
                     $scope.name = null;
                     $scope.open_issues = null;
@@ -257,7 +226,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                     //$scope.sha = null;
                     //$scope.message = null;
                     $scope.ownerWithSpace = null;
-                    alert('Deze student heeft geen BAP repo!');
+                    alert('No BAP repo found');
                     $scope.loading = false;
                 }
         })
@@ -267,10 +236,10 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         $scope.error = false;
         var found = false;
         $scope.loading = true;
+
         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/commits' + accessToken).then(function(res){
                 $scope.commits = [];
                 $scope.messageNames = [];
-                console.log(res);
                 for (var i =  0; i < res.data.length; i++) {
                     $scope.commits.push(
                         res.data[i].sha
@@ -288,22 +257,19 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
 
     $scope.GoToTextarea = function(index) {
         document.getElementById("commentCommit").focus();  
-        console.log(index);
         $scope.shacode = $scope.commits[index];
-        console.log($scope.shacode);
     }
 
     $scope.PostComments = function(shacode, userLogin) {
-        $scope.error = false;
+    	$scope.error = false;
+        $scope.loading = true;
         var CommentInfo;
         var config;
-        console.log(shacode);
+
         CommentInfo = document.getElementById("commentCommit").value;
-        $scope.loading = true;
         config = { headers: { 'Content-Type': 'application/json'}}
         if (CommentInfo != '' && shacode != undefined) {
             $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/commits/' + shacode + '/comments' + accessToken, {'body': CommentInfo}, config).then(function(res){
-                console.log(res);
                 document.getElementById("commentCommit").value = "";
                 $scope.loading = false;
                 $scope.error = false;
@@ -321,21 +287,19 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         var found = false;
         var ChangeHeaders;
         $scope.loading = true;
+
         ChangeHeaders = { headers: { 'Accept': 'application/vnd.github.3.raw'}}
+
         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/contents/scriptie' + accessToken).then(function(res){
                 for (var i =  0; i < res.data.length; i++) {
                     if (res.data[i].name.indexOf("Scriptie")!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1
-                        console.log(res.data[i].name);
-                        console.log(res.data[i].path);
-                        console.log(res.data[i].sha);
-                        console.log(res.data[i].size);
+
                         $scope.NAME = res.data[i].name;
                         $scope.PATH = res.data[i].path;
                         $scope.SHA = res.data[i].sha;
                         $scope.SIZE = res.data[i].size;
                         $scope.ScriptieNameOwner = userLogin.userName;
                         found = true;
-                        console.log($scope.NAME);
                     } 
                 }
                 if (found == false) {
@@ -350,7 +314,6 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                 } 
                 else {
                     $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/git/blobs/' + $scope.SHA + accessToken, ChangeHeaders).then(function(res){
-                        console.log(res);
                         $scope.CONTENT = res.data;
                         Converter = new showdown.Converter();
                         ScriptionHTML = Converter.makeHtml($scope.CONTENT);
@@ -361,10 +324,63 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         })
     }
 
+    $scope.PostCommentScription = function(userLogin) {
+        $scope.error = false;
+        var date = new Date();
+        var dateInNumbers = date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear()
+        var config;
+        var IssueBody;
+        $scope.loading = true;
+        IssueBody = document.getElementById("commentScriptie").value;
+        config = { headers: { 'Content-Type': 'application/json'}}
+        if (IssueBody != '') {
+           $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': IssueBody, 'title': "Scriptie feedback " + dateInNumbers}, config).then(function(res){
+                document.getElementById("commentScriptie").value = "";
+                $scope.loading = false;
+           });
+        }
+        else {
+            alert("Comment area is leeg!");
+            $scope.loading = false;
+        }
+    }
+
+    $scope.showSelectedText = function() {
+        $scope.selectedText =  $scope.getSelectionText();
+    };
+
+    $scope.getSelectionText = function() {
+      var text = "";
+      if (window.getSelection) {
+          text = window.getSelection().toString();
+      } else if (document.selection && document.selection.type != "Control") {
+          text = document.selection.createRange().text;
+      }
+      return text;
+    };
+
+    $scope.PostCommentScriptionHighlighted = function(userLogin) {
+        $scope.error = false;
+        var config;
+        var IssueBody;
+        $scope.loading = true;
+        IssueBody = document.getElementById("commentScriptie").value;
+        config = { headers: { 'Content-Type': 'application/json'}}
+        if (IssueBody != '') {
+           $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': "Comment: " + IssueBody + " / highlighted text: " + $scope.selectedText, 'title': "Scriptie feedback highlighted text"}, config).then(function(res){
+                document.getElementById("commentScriptie").value = "";
+                $scope.loading = false;
+           });
+        }
+        else {
+            alert("Comment area is leeg!");
+            $scope.loading = false;
+        }
+    }
+
     $scope.GetIssues = function(userLogin){
         $scope.error = false;
         $http.get('https://api.github.com/orgs/MyOrg1617/repos' + accessToken).then(function(res){
-                console.log(res);
                 for (var i =  0; i < res.data.length; i++) {
                     if (res.data[i].name.indexOf("BAP1617_" + userLogin.userName)!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1 //indexOf("do_ex1_")
                         $scope.eigenaar = userLogin.userName;
@@ -379,10 +395,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                     $scope.numbers = [];
                     $scope.titles = [];
                     $scope.IssuesNameOwner = userLogin.userName;
-                    console.log(res);
                     for (var i =  0; i < res.data.length; i++) {
-                        console.log(res.data[i].number);
-                        console.log(res.data[i].title);
 
                         $scope.titles.push(res.data[i].title); 
                         $scope.title = $scope.titles || 'NOT';
@@ -399,27 +412,24 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                 }
                 $scope.loading = false;
         })
-        console.log($scope.title);
-        console.log($scope.number);
     }
 
     $scope.PostIssuesRepo = function(userLogin) {
         $scope.error = false;
-        console.log(accessToken);
+        $scope.loading = true;
         var IssueTitle;
         var IssueText;
-        var config;
-        $scope.loading = true;
+        var config;        
+
         IssueTitle = document.getElementById("issuetitleRepo").value;
         IssueText = document.getElementById("commentCommit").value;
         config = { headers: { 'Content-Type': 'application/json'}}
         if (IssueText != '' && IssueTitle != '') {
             $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': IssueText, 'title': IssueTitle}, config).then(function(res){
-                console.log(res);
-                document.getElementById("commentCommit").value = "";
-                document.getElementById("issuetitleRepo").value = "";
-                $scope.loading = false;
-            });
+            document.getElementById("commentCommit").value = "";
+            document.getElementById("issuetitleRepo").value = "";
+            $scope.loading = false;
+        });
         }
         else {
             alert("Comment area of titel area is leeg!");
@@ -428,21 +438,20 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     }
 
     $scope.PostIssues = function(userLogin) {
-        $scope.error = false;
-        console.log(accessToken);
-        var IssueTitle;
+    	$scope.error = false;
+		$scope.loading = true;
+		var IssueTitle;
         var IssueText;
         var config;
-        $scope.loading = true;
+
         IssueTitle = document.getElementById("issuetitleIssue").value;
         IssueText = document.getElementById("commentIssue").value;
         config = { headers: { 'Content-Type': 'application/json'}}
         if (IssueText != '' && IssueTitle != '') {
             $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': IssueText, 'title': IssueTitle}, config).then(function(res){
-                console.log(res);
-                document.getElementById("commentIssue").value = "";
-                document.getElementById("issuetitleIssue").value = "";
-                $scope.loading = false;
+            document.getElementById("commentIssue").value = "";
+            document.getElementById("issuetitleIssue").value = "";
+            $scope.loading = false;
             });
         }
         else {
@@ -451,67 +460,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         }
     }
 
-    $scope.PostCommentScription = function(userLogin) {
-        $scope.error = false;
-        var date = new Date();
-        var dateInNumbers = date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear()
-        console.log(dateInNumbers);
-        var config;
-        var IssueBody;
-        $scope.loading = true;
-        IssueBody = document.getElementById("commentScriptie").value;
-        config = { headers: { 'Content-Type': 'application/json'}}
-        if (IssueBody != '') {
-           $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': IssueBody, 'title': "Scriptie feedback " + dateInNumbers}, config).then(function(res){
-                console.log(res);
-                document.getElementById("commentScriptie").value = "";
-                $scope.loading = false;
-           });
-        }
-        else {
-            alert("Comment area is leeg!");
-            $scope.loading = false;
-        }
-    }
-
-    $scope.showSelectedText = function() {
-        $scope.selectedText =  $scope.getSelectionText();
-        console.log($scope.selectedText);
-    };
-
-    $scope.getSelectionText = function() {
-      var text = "";
-      if (window.getSelection) {
-          text = window.getSelection().toString();
-      } else if (document.selection && document.selection.type != "Control") {
-          text = document.selection.createRange().text;
-      }
-      return text;
-    };
-
-    $scope.PostCommentScriptionHighlighted = function(userLogin) {
-        $scope.error = false;
-        console.log($scope.selectedText);
-        var config;
-        var IssueBody;
-        $scope.loading = true;
-        IssueBody = document.getElementById("commentScriptie").value;
-        config = { headers: { 'Content-Type': 'application/json'}}
-        if (IssueBody != '') {
-           $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues' + accessToken, {'body': "Comment: " + IssueBody + " / highlighted text: " + $scope.selectedText, 'title': "Scriptie feedback highlighted text"}, config).then(function(res){
-                console.log(res);
-                document.getElementById("commentScriptie").value = "";
-                $scope.loading = false;
-           });
-        }
-        else {
-            alert("Comment area is leeg!");
-            $scope.loading = false;
-        }
-    }
-
     $scope.thisIssue = function(number) {
-        console.log(number);
         $scope.issueNumber = $scope.numbers[number];
     }
 
@@ -520,11 +469,9 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         var config;
         var issueState = 'closed';
         config = { headers: { 'Content-Type': 'application/json'}}
-        console.log(number);
         $scope.loading = true;
         if (number != undefined) {
             $http.post('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin + '/issues/' + number + accessToken, {"state":issueState}, config).then(function(res){
-                console.log(res);
                 $scope.loading = false;
                 $scope.error = false;
             });
@@ -535,7 +482,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         }
     }
 
-    $scope.NotificationsOn = function(userLogin) {
+   $scope.NotificationsOn = function(userLogin) {
         $scope.error = false;
         console.log("On");
         var config;
@@ -557,22 +504,107 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         });
     }
 
+    $scope.GetStudentInfo = function(userLogin) {
+    	$http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/contents/Info.md' + accessToken).then(function(res){
+    		$scope.ThisUser=[]
+    		var shaInfo = res.data.sha;
+    		var Headers;
+    		Headers = { headers: { 'Accept': 'application/vnd.github.3.raw'}}
+
+    		$http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/git/blobs/' + shaInfo + accessToken, Headers).then(function(response){
+    		    $scope.ThisGuyData = response.data;
+    		    userLogin.FullName = $scope.ThisGuyData.substring($scope.ThisGuyData.indexOf("<!---naam -->")+19, $scope.ThisGuyData.indexOf("<!---gitnaam -->"));
+    		    userLogin.GitName = $scope.ThisGuyData.substring($scope.ThisGuyData.indexOf("<!---gitnaam -->")+25, $scope.ThisGuyData.indexOf("<!---reponaam -->"));
+    		    userLogin.RepoName = $scope.ThisGuyData.substring($scope.ThisGuyData.indexOf("<!---reponaam -->")+27, $scope.ThisGuyData.indexOf("<!---promotor -->"));
+    		    userLogin.BAPPromotor = $scope.ThisGuyData.substring($scope.ThisGuyData.indexOf("<!---promotor -->")+27, $scope.ThisGuyData.indexOf("<!---phone -->"));
+    		    userLogin.Phone = $scope.ThisGuyData.substring($scope.ThisGuyData.indexOf("<!---phone -->")+24, $scope.ThisGuyData.indexOf("<!---address -->"));
+    		    userLogin.Address = $scope.ThisGuyData.substring($scope.ThisGuyData.indexOf("<!---address -->")+25, $scope.ThisGuyData.indexOf("<!---company -->"));
+    		    userLogin.Company = $scope.ThisGuyData.substring($scope.ThisGuyData.indexOf("<!---company -->")+25, $scope.ThisGuyData.indexOf("<!---end -->"));
+    		    $scope.HisName = userLogin.FullName;
+    		    $scope.widget = {title: $scope.HisName};
+    		    refresh($scope.HisName);
+        	});
+        	$scope.ThisUser.push(userLogin);
+    	});
+    }
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ===================================================DATABASE===================================================
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ var refresh = function(MyUser) {
+    $http.get('/studenteninfo').success(function(response) {
+      	console.log("I got the data I requested");
+      	$scope.FilterThisGuy = [];
+      	$scope.studenteninfo = response;
+      
+      	for (var i = 0; i <= $scope.studenteninfo.length; i++) {
+        	if ($scope.studenteninfo[i].name == MyUser) {
+        		$scope.FilterThisGuy.push($scope.studenteninfo[i]);
+        	}
+        	else{
+        		$scope.student = "";
+        	}
+      	}
+    });
+  };
+
+  $scope.addData = function(MyUser) {
+
+    $http.post('/studenteninfo', $scope.student).success(function(response) {
+      $scope.GetStudentInfo(MyUser);
+    });
+  };
+
+  $scope.remove = function(id, MyUser) {
+    $http.delete('/studenteninfo/' + id).success(function(response) {
+      $scope.GetStudentInfo(MyUser);
+    });
+  };
+
+  $scope.edit = function(id) {
+    $http.get('/studenteninfo/' + id).success(function(response) {
+      $scope.student = response;
+    });
+  };  
+
+  $scope.update = function(MyUser) {
+    $http.put('/studenteninfo/' + $scope.student._id, $scope.student).success(function(response) {
+      $scope.GetStudentInfo(MyUser);
+    })
+  };
+
+  $scope.deselect = function() {
+    $scope.student = "";
+  };
+
+  $scope.Auth = function(){
+      $http.get('/tokens').success(function(response) {
+      console.log("I need an AuthToken ... Lets go get it");
+      $scope.tokens = response;
+      $scope.token = "";
+    });
+  };
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ==============================================================================================================
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     if (LoginCode.length >= 10) {
     	$scope.GetToken();
         $scope.logged = true;
     }
 
     if (performance.navigation.type == 1 && LoginCode.length >= 15) {
-        console.info( "This page is reloaded" );
-        $scope.Login();
-    } 
-    else if (performance.navigation.type == 1) {
-        console.info( "This page is reloaded");
-    }
-    else {
-        console.info( "This page is not reloaded");
-    }
-
+  		console.info( "This page is reloaded" );
+  		$scope.Login();
+	} 
+	else if (performance.navigation.type == 1) {
+  		console.info( "This page is reloaded");
+	}
+	else {
+  		console.info( "This page is not reloaded");
+	}
 });
 
 // promotor uit readme file halen en dan studenten filteren op basis van promotor en dan weergeven na de login (username van de promotor) 
@@ -616,12 +648,13 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     x- repo link M
     - layout K
     - gegevens studenten aanvullen in database via info.md K
-    x- login token fixen K
-    x- studenten per promotor filteren M
+    - login token fixen K
+    - studenten per promotor filteren M
     x- watching in orde brengen voor promotor M
     x- bollekes kleuren M
     - checken op bugs M
     - hulppagina 
+    - (hide all the keys als er tijd over is)
     - (grafiek misschien als er tijd over is)
     x- 2 x promotor account github aanmaken + bij settings account naam: Tim Dams / Maarten Luyts MK
     x- textarea mag niet leeg zijn tijdens comments posten M
