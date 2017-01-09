@@ -6,9 +6,9 @@
 
 ## 2
 * Stuur een mail naar 1 van deze email adressen: kayode.aina@student.ap.be, mike.meyers@student.ap.be
-* Als u de client id ontvangen hebt van ons moet u deze vervangen in de bestanden.
+* Als u de client id en client secret ontvangen hebt van ons moet u deze vervangen in de bestanden.
 * Open de bestanden server.js en api.js
-* ... vervangen door de client id.
+* ... op de eerste lijn in beide bestanden vervangen door de client id.
 
 ## 3
 * Download NodeJS via link: https://nodejs.org/en/download/
