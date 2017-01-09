@@ -2,14 +2,22 @@ var express = require('express');
 var app = express();
 var mongojs = require('mongojs');
 var db = mongojs('studenteninfo', ['studenteninfo']);
+var tk = mongojs('tokens', ['tokens']);
 var bodyParser = require('body-parser');
-var AuthToken = "";
-var ClientId = "";
+var AuthToken = ...
+var ClientId = ...
 const https = require('https');
-var fullUserCode;
 
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
+
+app.get('/tokens', function(req, res) {
+  console.log("I received get AuthToken request")
+  tk.tokens.find(function (err, docs) {
+    console.log(docs);
+    res.json(docs);
+  });
+});
 
 app.post('/TokenExchange', function (req, res) {
   var URL = req.headers.referer;
@@ -57,7 +65,6 @@ app.get('/studenteninfo/:id', function (req, res) {
   db.studenteninfo.findOne({_id: mongojs.ObjectId(id)}, function (err, doc) {
     res.json(doc);
   });
-  
 });
 
 app.put('/studenteninfo/:id', function (req, res) {
@@ -74,3 +81,5 @@ app.put('/studenteninfo/:id', function (req, res) {
 
 app.listen(3000);
 console.log("Server running on port 3000");
+
+// name in alle functies zette >>>> check hoe hy da doe me zn id

@@ -57,7 +57,11 @@ h1 {
 }
 
 #icon {
-    font-size: 12px;        
+    font-size: 1.2em;        
+}
+
+#bol {
+	font-size: 1.25em;
 }
 
 .red {
