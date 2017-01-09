@@ -66,5 +66,3 @@ app.put('/studenteninfo/:id', function (req, res) {
 
 app.listen(3000);
 console.log("Server running on port 3000");
-
-// name in alle functies zette >>>> check hoe hy da doe me zn id

@@ -171,7 +171,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         
         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/contents/Logfiles' + accessToken).then(function(res){
                 for (var i =  0; i < res.data.length; i++) {
-                    if (res.data[i].name.indexOf("LOG")!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1
+                    if (res.data[i].name.indexOf("LOG")!== -1) {
                         $scope.nameLog = res.data[i].name;
                         $scope.shaLog = res.data[i].sha;
                         $scope.contentLog = null;
@@ -206,9 +206,8 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
 
         $http.get('https://api.github.com/orgs/MyOrg1617/repos' + accessToken).then(function(res){
                 for (var i =  0; i < res.data.length; i++) {
-                    if (res.data[i].name.indexOf("BAP1617_" + userLogin.userName)!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1 //indexOf("do_ex1_")
-                        //$scope.sha = null;
-                        //$scope.message = null;
+                    if (res.data[i].name.indexOf("BAP1617_" + userLogin.userName)!== -1) {
+
                         $scope.name = res.data[i].name;
                         $scope.open_issues = res.data[i].open_issues;
                         $scope.owner = userLogin.userName;
@@ -223,8 +222,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
                     $scope.name = null;
                     $scope.open_issues = null;
                     $scope.owner = null;
-                    //$scope.sha = null;
-                    //$scope.message = null;
+
                     $scope.ownerWithSpace = null;
                     alert('No BAP repo found');
                     $scope.loading = false;
@@ -292,7 +290,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
 
         $http.get('https://api.github.com/repos/MyOrg1617/BAP1617_' + userLogin.userName + '/contents/scriptie' + accessToken).then(function(res){
                 for (var i =  0; i < res.data.length; i++) {
-                    if (res.data[i].name.indexOf("Scriptie")!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1
+                    if (res.data[i].name.indexOf("Scriptie")!== -1) {
 
                         $scope.NAME = res.data[i].name;
                         $scope.PATH = res.data[i].path;
@@ -382,7 +380,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
         $scope.error = false;
         $http.get('https://api.github.com/orgs/MyOrg1617/repos' + accessToken).then(function(res){
                 for (var i =  0; i < res.data.length; i++) {
-                    if (res.data[i].name.indexOf("BAP1617_" + userLogin.userName)!== -1) { // Hij geeft de index waar de gezochte string begint, vind hij niks dan geeft hij -1 //indexOf("do_ex1_")
+                    if (res.data[i].name.indexOf("BAP1617_" + userLogin.userName)!== -1) { 
                         $scope.eigenaar = userLogin.userName;
                     } 
                 }
@@ -606,59 +604,3 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
   		console.info( "This page is not reloaded");
 	}
 });
-
-// promotor uit readme file halen en dan studenten filteren op basis van promotor en dan weergeven na de login (username van de promotor) 
-//grafiek van iedereen waarvoor je promotor bent en dan de deadlines erin zetten en checken wie da al gedaan heeft en wie niet 
-
-        // LAYOUTING
-    //1° = wat er getoond wordt op het middeste scherm
-    //2° = wat er getoond wordt op het rechtse scherm
-//Druk op LOGIN: 2° toggle 
-//Druk op OOGSKE: linkerscherm toggle 
-//Druk op REPOSITORY: 1° toon alle commits, comment knoppen; 2° create issue
-//Druk op ISSUES: 4 : 1° toon alle open issues, close knoppen; 2° create issue
-//Druk op SCRIPTIE: 1° toon scriptie; 2° commentaar knop <-> highlighted commentaar
-//Druk op INFO: 1° toon student info; 2° data tovoegen
-//Druk op LOG: 1° toon log van de laatste week
-//Druk op HELP: -> scherm met onderwerpen -> printscreens met "paint-edits"
-
-        //HELP PAGE
-    //Onderwerpen
-    //FAQ
-// We gaan onze app late zien aan de leerkrachten, en gaan alle vrage daze stellen opsschrijven
-// We vrage wa ze niet begrijpe 
-// en da zette we in een FAQ
-
-        //LOOK HELP PAGINA
- /*TITEL HULP
-
- scriptie
- issues aanmake
- issues sluite
- etc.
-
- FAQ
- Vraag van de leekracht
- Vraag van de leekracht
- Vraag van de leekracht
- Vraag van de leekracht
-*/
-/*
-    Wat nog te doen:
-    x- repo link M
-    - layout K
-    - gegevens studenten aanvullen in database via info.md K
-    - login token fixen K
-    - studenten per promotor filteren M
-    x- watching in orde brengen voor promotor M
-    x- bollekes kleuren M
-    - checken op bugs M
-    - hulppagina 
-    - (hide all the keys als er tijd over is)
-    - (grafiek misschien als er tijd over is)
-    x- 2 x promotor account github aanmaken + bij settings account naam: Tim Dams / Maarten Luyts MK
-    x- textarea mag niet leeg zijn tijdens comments posten M
-    x- logged in as originele naam K
-    x- originele naam weergeven M
-    x- alles omzetten naar de andere organisatie M
-*/

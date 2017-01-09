@@ -22,7 +22,7 @@
                     </div>
                     <div class="media-body left-body">
                         <p>
-                            <a ng-click="GetStudentInfo(loginEl); $parent.INFO=true; $parent.REPOSI=false; $parent.LOG=false; $parent.ISSUES=false; $parent.SCRIPT=false" href="#" style="text-decoration: none; font-size: 1.3em; color: black;"><!-- info -->{{loginEl.FullnameSpace}}</a>
+                            <a ng-click="GetStudentInfo(loginEl); $parent.INFO=true; $parent.REPOSI=false; $parent.LOG=false; $parent.ISSUES=false; $parent.SCRIPT=false" href="#" style="text-decoration: none; font-size: 1.3em; color: black;">{{loginEl.FullnameSpace}}</a>
 
                             <span id="bol" class="glyphicon glyphicon-certificate" ng-class="{'green': (loginEl.daysSinceLastCommit <= 7), 'orange': (loginEl.daysSinceLastCommit > 7 && loginEl.daysSinceLastCommit <= 14), 'red': (loginEl.daysSinceLastCommit > 14)}">
                             </span> <br>
@@ -39,16 +39,15 @@
                         <p>Promotor(s):<br>{{loginEl.BAPPromotor}}<br></p>
                     </div>
                     <div class="pull-right btn-body">
-<!-- FIX -->                        <button type="submit" class="btn btn-success" ng-click="NotificationsOn(loginEl)">Notificaties on</button>
-<!-- FIX -->                        <button type="submit" class="btn btn-danger" ng-click="NotificationsOff(loginEl)">Notificaties off</button>
-                            <!-- FIX: Dropdown knop van maken met oogje op -->
+                        <button type="submit" class="btn btn-success" ng-click="NotificationsOn(loginEl)">Notificaties on</button>
+                        <button type="submit" class="btn btn-danger" ng-click="NotificationsOff(loginEl)">Notificaties off</button>
 
                         <button type="submit" id="show" ng-click="GetRepos(loginEl); $parent.REPOSI=true; $parent.INFO=false; $parent.LOG=false; $parent.ISSUES=false; $parent.SCRIPT=false" class="btn btn-info">Repository</button>
 
                         <button type="submit" ng-click="GetScription(loginEl); $parent.SCRIPT=true; $parent.INFO=false; $parent.REPOSI=false; $parent.LOG=false; $parent.ISSUES=false" class="btn btn-default">Scriptie</button>
                     </div>
                 </div>
-            </div> <!-- close Jumbotron -->
+            </div>
         </div>
 
         <div class="col-md-5 datadeel">
@@ -194,10 +193,8 @@
 </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://cdn.rawgit.com/showdownjs/showdown/1.5.0/dist/showdown.min.js" ></script>
-    <!-- <script src="js/jquery-2.1.1.js"></script>  -->
     <script src="js/bp.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/api.js"></script>
-    <!-- <script src="controllers/controller.js"></script> -->
 </body>
 </html>
