@@ -5,10 +5,16 @@
 * Deze kan u terugvinden onder clone & download.
 
 ## 2
-* Stuur een mail naar 1 van deze email adressen: kayode.aina@student.ap.be, mike.meyers@student.ap.be
-* Als u de client id en client secret ontvangen hebt van ons moet u deze vervangen in de bestanden.
-* Open de bestanden server.js en api.js
-* ... op de eerste lijn in beide bestanden vervangen door de client id.
+* Ga naar deze link (https://github.com/settings/developers), wel met u account.
+* Dan naar OAuth applications -> register a new application.
+* Kies een naam voor de applicatie bij Application name.
+* Dan bij Homepage URL en Authorization callback URL zet u http://localhost:3000/
+* Dan kiest u degene die u juist heeft aangemaakt.
+* Daar vind u dan het Client ID en Client Secret.
+* Open het bestand server.js
+* ... op de eerste lijn vervangen door door de code van client id en de andere ... op de eerste lijn vervangen door de code van client secret. 
+* Open het bestand public/js/api.js
+* ... op de eerste lijn vervangen door door de code van client id. 
 
 ## 3
 * Download NodeJS via link: https://nodejs.org/en/download/
