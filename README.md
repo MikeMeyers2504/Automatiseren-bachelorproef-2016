@@ -12,9 +12,9 @@
 * Dan kiest u degene die u juist heeft aangemaakt.
 * Daar vind u dan het Client ID en Client Secret.
 * Open het bestand server.js
-* ... op de eerste lijn vervangen door door de code van client id en de andere ... op de eerste lijn vervangen door de code van client secret. 
+* ... op de eerste lijn vervangen door door de code van client id en de andere ... vervangen door de code van client secret. 
 * Open het bestand public/js/api.js
-* ... op de eerste lijn vervangen door door de code van client id. 
+* ... op de eerste lijn vervangen door de code van client id. 
 
 ## 3
 * Download NodeJS via link: https://nodejs.org/en/download/
