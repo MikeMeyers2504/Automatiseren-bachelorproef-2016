@@ -53,3 +53,5 @@
 ## Aandachtspunt
 * Als je als promotor alle functies wilt doen op onze website moet je wel eerst zien dat je lid bent van de organisatie.
 * Dit is voor de rechten, dus dat je alles kan doen in die repo's van die organisatie.
+* Gelieve op je profiel je naam aan te passen naar Tim Dams of Maarten Luyts. 
+* Deze namen hebben we gebruikt als promotors waarop die de studenten gaat filteren.
