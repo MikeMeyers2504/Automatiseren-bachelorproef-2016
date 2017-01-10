@@ -14,7 +14,7 @@
 <body ng-controller="MainCtrl">
 <div> 
     <div class="row">
-        <div class="col-md-4 studentendeel">
+        <div class="col-xs-4 studentendeel">
             <div class="jumbotron" ng-repeat="loginEl in login | filter:loginEl">
                 <div class="media"">
                     <div class="media-left" style="width: 100px; height: 100px;">
@@ -27,22 +27,23 @@
                             <span id="bol" class="glyphicon glyphicon-certificate" ng-class="{'green': (loginEl.daysSinceLastCommit <= 7), 'orange': (loginEl.daysSinceLastCommit > 7 && loginEl.daysSinceLastCommit <= 14), 'red': (loginEl.daysSinceLastCommit > 14)}">
                             </span> <br>
 
-                            <a target="_blank" href="{{loginEl.site}}">Link repo</a> 
+                            <a target="_blank" href="{{loginEl.site}}">GitHub</a> 
                         </p>  
                         <p>Open Issues: <a ng-click="GetIssues(loginEl); $parent.ISSUES=true; $parent.INFO=false; $parent.REPOSI=false; $parent.LOG=false; $parent.SCRIPT=false" href="#">{{loginEl.Open_issues}}</a>
                         <br>
-                        <a ng-click="GetTheLog(loginEl); $parent.INFO=false; $parent.REPOSI=false; $parent.LOG=true; $parent.ISSUES=false; $parent.SCRIPT=false" href="#">Last Log </a><span id="icon" class="glyphicon glyphicon-time" title="{{loginEl.CommitLogDate}}"></span>
+                        <a ng-click="GetTheLog(loginEl); $parent.INFO=false; $parent.REPOSI=false; $parent.LOG=true; $parent.ISSUES=false; $parent.SCRIPT=false" href="#">Logboek</a><span id="icon" class="glyphicon glyphicon-time" title="{{loginEl.CommitLogDate}}" style="padding: 3px;"></span>
                         </p>
                     </div>
                     <div class="media-body right-body">
                         <p>Stagebedrijf:<br>{{loginEl.Company}}</p>
                         <p>Promotor(s):<br>{{loginEl.BAPPromotor}}<br></p>
                     </div>
+                    <div class="pull-left btn-body" style="padding-top: 1em;">
+                        <button type="submit" class="btn btn-xs btn-success" ng-click="NotificationsOn(loginEl)" title="Email notificatie aan">Volg</button>
+                        <button type="submit" class="btn btn-xs btn-danger" ng-click="NotificationsOff(loginEl)" title="Email notificatie uit">Ontvolg</button>
+                    </div>
                     <div class="pull-right btn-body">
-                        <button type="submit" class="btn btn-success" ng-click="NotificationsOn(loginEl)">Notificaties on</button>
-                        <button type="submit" class="btn btn-danger" ng-click="NotificationsOff(loginEl)">Notificaties off</button>
-
-                        <button type="submit" id="show" ng-click="GetRepos(loginEl); $parent.REPOSI=true; $parent.INFO=false; $parent.LOG=false; $parent.ISSUES=false; $parent.SCRIPT=false" class="btn btn-info">Repository</button>
+                        <button type="submit" id="show" ng-click="GetRepos(loginEl); $parent.REPOSI=true; $parent.INFO=false; $parent.LOG=false; $parent.ISSUES=false; $parent.SCRIPT=false" class="btn btn-info" style="margin-right: 0.8em;">Repository</button>
 
                         <button type="submit" ng-click="GetScription(loginEl); $parent.SCRIPT=true; $parent.INFO=false; $parent.REPOSI=false; $parent.LOG=false; $parent.ISSUES=false" class="btn btn-default">Scriptie</button>
                     </div>
@@ -50,8 +51,8 @@
             </div>
         </div>
 
-        <div class="col-md-5 datadeel">
-            <h1 ng-show="INFO">Student Information</h1><br>
+        <div class="col-xs-5 datadeel">
+            <h1 ng-show="INFO">Informatie van de student</h1><br>
             <h4 ng-if="loading === true">Gelieve even te wachten, pagina is aan het laden.</h4><br>
             <h4 ng-if="loading === true">Deze website is mede mogelijk gemaakt door Kayode en Mike :D</h4><br>
             <h4 ng-if="error === true">Gelieve eerst één aan te klikken.</h4><br>
@@ -110,26 +111,24 @@
                     <tr>
                         <td>{{student.label}}</td>
                         <td>{{student.data}}</td>
-                        <td><button ng-repeat="HisData in ThisUser" class="btn btn-danger" ng-click="remove(student._id, HisData.FilteredRepoName)">Remove</button></td>
-                        <td><button ng-repeat="HisData in ThisUser" class="btn btn-warning" ng-click="edit(student._id, HisData.FilteredRepoName)">Edit</button></td>
+                        <td><button ng-repeat="HisData in ThisUser" class="btn btn-xs btn-danger" ng-click="remove(student._id, HisData.FilteredRepoName)">Verwijderen</button></td>
+                        <td><button ng-repeat="HisData in ThisUser" class="btn btn-xs btn-info" ng-click="edit(student._id, HisData.FilteredRepoName)">Bewerken</button></td>
                     </tr>
                 </tbody>
             </table>
 
             <div id="repo">
-                <div ng-repeat="titleEl in title track by $index" class="col-sm-12" ng-show="ISSUES" style="display: block;">
-                    <button  ng-click="thisIssue($index)">Title: {{titleEl}}</button>
+                <div ng-repeat="titleEl in title track by $index" class="col-sm-12 markIssue" ng-show="ISSUES" style="display: block;">
+                    <button class="Nice-ify btn-default" ng-click="thisIssue($index)" style="width: 100%;">{{titleEl}}</button>
                 </div>
 
-                <div ng-repeat="messageName in message track by $index" class="col-sm-12" ng-show="REPOSI" style="display: block;">
-                    <button  ng-click="GoToTextarea($index)">Name message: {{messageName}}</button>
+                <div ng-repeat="messageName in message track by $index" class="col-sm-12 markCommit" ng-show="REPOSI" style="display: block;">
+                    <button class="Nice-ify btn-default" ng-click="GoToTextarea($index)" style="width: 100%;">{{messageName}}</button>
                 </div>
 
                 <div ng-show="SCRIPT" ng-bind-html="CONTENT" ng-mouseup="showSelectedText()">
                     <p>{{CONTENT}}</p> 
                 </div>
-
-                <div ng-bind="selectedText"></div>
                         
                 <div ng-show="LOG" ng-bind-html= "LogParsedContent" ng-mouseup="showSelectedText()">
                     <p>{{LogParsedContent}}</p>
@@ -137,56 +136,60 @@
             </div>
         </div>
 
-        <div class="col-md-3 interactiedeel">
+        <div class="col-xs-3 interactiedeel">
             <form class="navbar-form navbar-right" role="search">
-                <div class="form-group">
-                    <input type="text" ng-model="loginEl.FullName" class="form-control" placeholder="Find student" style="width:80%;">
+                <div class="form-group SearchDiv">
+                    <label ng-if="logged === true">Ingelogd als {{LoginName}}</label>
+                    <button ng-click="Login()" ng-if="logged === false"">Inloggen</button>
+                    <button class="btn btn-xs" ng-click="Logout()" ng-if="logged === true" style="background-color: white; border: black 1px solid;">
+                        <span class="glyphicon glyphicon-off" title="Uitloggen"></span>
+                    </button>
+                    <input type="text" ng-model="loginEl.FullName" class="form-control" placeholder="Zoek student" style="width:100%;">
                     <input type="text" name="widgetPromotor.title" class="hidden" ng-value="loginEl.BAPPromotor=widgetPromotor.title" readonly="" style="width: 100%;">
-                    <button ng-click="Login()" ng-if="logged === false">Login</button>
-                    <label ng-if="logged === true">Logged in as {{LoginName}}</label>
-                    <button ng-click="Logout()" ng-if="logged === true">Logout</button>
                 </div>
 
-                <input id="issuetitleIssue" type="text" ng-show="ISSUES" class="form-control" placeholder="Issue Titel" style="width: 90%; margin-top: 10px;">
-                <input id="issuetitleRepo" type="text" ng-show="REPOSI" class="form-control" placeholder="Issue Titel" style="width: 90%; margin-top: 10px;">
+                <input id="issuetitleIssue" type="text" ng-show="ISSUES" class="form-control" placeholder="Titel nieuwe issue" style="width: 90%; margin-top: 10px;">
+                <input id="issuetitleRepo" type="text" ng-show="REPOSI" class="form-control" placeholder="Titel nieuwe issue" style="width: 90%; margin-top: 10px;">
 
-                <!-- <textarea class="HIGHLIGHT" type="text" rows="10" cols="58" placeholder="Write your comments." style="margin-top: 10px;"></textarea> -->
-                <textarea id="commentScriptie" type="text" rows="10" cols="58"  ng-show="SCRIPT" placeholder="Write your comments." style="width: 90%; margin-top: 10px;"></textarea>
-                <textarea id="commentIssue" type="text" rows="10" cols="58"  ng-show="ISSUES" placeholder="Write your comments." style="width: 90%; margin-top: 10px;"></textarea>
-                <textarea id="commentCommit" type="text" rows="10" cols="58"  ng-show="REPOSI" placeholder="Write your comments." style="width: 90%; margin-top: 10px;"></textarea>
+                <textarea ng-if="highlighted===true" class="HIGHLIGHT" type="text" rows="5" cols="58" ng-show="SCRIPT" ng-bind="selectedText" readonly="" style="width: 90%; margin-top: 10px;"></textarea>
+                <textarea id="commentScriptie" type="text" rows="10" cols="58" ng-show="SCRIPT" placeholder=" Jouw commentaar ... " style="width: 90%; margin-top: 10px;"></textarea>
+                <textarea id="commentIssue" type="text" rows="10" cols="58" ng-show="ISSUES" placeholder=" Jouw commentaar ... " style="width: 90%; margin-top: 10px;"></textarea>
+                <textarea id="commentCommit" type="text" rows="10" cols="58" ng-show="REPOSI" placeholder=" Jouw commentaar ... " style="width: 90%; margin-top: 10px;"></textarea>
 
-                <button id="PostCom" type="submit" class="btn btn-success" ng-show="REPOSI" style="width: 90%; margin-top: 3px;" ng-click="PostComments(shacode, owner)">Comment commit</button>
+                <button id="PostCom" type="submit" class="btn btn-success" ng-show="REPOSI" style="width: 90%; margin-top: 3px;" ng-click="PostComments(shacode, owner)">Commentaar</button>
 
-                <button  type="submit" class="btn btn-success" ng-show="SCRIPT" style="width: 90%; margin-top: 3px;" ng-click="PostCommentScription(ScriptieNameOwner)">Comment</button>
+<!-- FIX -->                 <button  type="submit" class="btn btn-success" ng-show="SCRIPT" style="width: 90%; margin-top: 3px;" ng-click="PostCommentScription(ScriptieNameOwner)">Commentaar sriptie</button>
+<!-- NG-IF="highlighted===false" -->
 
-                <button type="submit" class="btn btn-success" ng-show="SCRIPT" style="width: 90%; margin-top: 3px;" ng-click="PostCommentScriptionHighlighted(ScriptieNameOwner)">Comment highlight</button>
+                 <button ng-if="highlighted===true" type="submit" class="btn btn-success" ng-show="SCRIPT" style="width: 90%; margin-top: 3px;" ng-click="PostCommentScriptionHighlighted(ScriptieNameOwner)">Commentaar aangeduide tekst</button>
 
-                <button ng-click="PostIssuesRepo(owner)" type="submit" class="btn btn-info" ng-show="REPOSI" style="width: 90%; margin-top: 3px;">Create issue</button>
-                <button ng-click="PostIssues(eigenaar)" type="submit" class="btn btn-info" ng-show="ISSUES" style="width: 90%; margin-top: 3px;">Create issue</button>
+                <button ng-click="PostIssuesRepo(owner)" type="submit" class="btn btn-info" ng-show="REPOSI" style="width: 90%; margin-top: 3px;">Issue aanmaken</button>
+                <button ng-click="PostIssues(eigenaar)" type="submit" class="btn btn-info" ng-show="ISSUES" style="width: 90%; margin-top: 3px;">Issue aanmaken</button>
 
-                <button ng-click="CloseIssue(issueNumber, IssuesNameOwner)" type="submit" class="btn btn-info" ng-show="ISSUES" style="width: 90%; margin-top: 3px;">Close issue</button>
+                <button ng-click="CloseIssue(issueNumber, IssuesNameOwner)" type="submit" class="btn btn-danger" ng-show="ISSUES" style="width: 90%; margin-top: 3px;">Issue sluiten</button>
+                <div class="DatabaseInteractie" ng-show="INFO">
+                    <div class="form-group hidden">
+                        <label for="newName" style="margin-top: 10px;">name:</label>
+                        <input type="text" ng-value="student.name=widget.title" class="form-control" id="newName" readonly="" style="width: 100%;">
+                    </div>
 
-                <div class="form-group hidden" ng-show="INFO">
-                    <label for="newName" style="margin-top: 10px;">name:</label>
-                    <input type="text" ng-value="student.name=widget.title" class="form-control" id="newName" readonly="" style="width: 100%;">
+                    <div class="form-group">
+                        <label for="newLabel" style="margin-top: 10px;">Nieuw label:</label>
+                        <input type="text" ng-model="student.label" class="form-control" id="newLabel" placeholder="Label" style="width: 101%;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newData" style="margin-top: 10px;">Informatie:</label>
+                        <input type="text" ng-model="student.data" class="form-control" id="newData" placeholder="Informatie" style="width: 103%;">
+                    </div>
+
+                    <button type="submit" class="btn btn-success" ng-repeat="HisData in ThisUser" ng-click="addData(HisData.FilteredRepoName)" style="margin-top: 10px; display: block;">Toevoegen</button>
+
+                    <td>
+                        <button class="btn btn-info" ng-repeat="HisData in ThisUser" ng-model="student.name" ng-value="widget.title" ng-click="update(HisData.FilteredRepoName)" style="margin-top: 10px;">Opslaan</button>&nbsp;&nbsp;
+                        <button class="btn btn-info" ng-click="deselect()" style="margin-top: 10px;">Annuleren</button>
+                    </td>
                 </div>
-
-                <div class="form-group" ng-show="INFO">
-                    <label for="newLabel" style="margin-top: 10px;">Label name:</label>
-                    <input type="text" ng-model="student.label" class="form-control" id="newLabel" placeholder="Label" style="width: 100%;">
-                </div>
-
-                <div class="form-group" ng-show="INFO">
-                    <label for="newData" style="margin-top: 10px;">New data:</label>
-                    <input type="text" ng-model="student.data" class="form-control" id="newData" placeholder="Data" style="width: 106%;">
-                </div>
-
-                <button type="submit" class="btn btn-success" ng-show="INFO" ng-repeat="HisData in ThisUser" ng-click="addData(HisData.FilteredRepoName)" style="margin-top: 10px; display: block;">Add Data</button>
-
-                <td ng-show="INFO">
-                    <button class="btn btn-info" ng-show="INFO" ng-repeat="HisData in ThisUser" ng-model="student.name" ng-value="widget.title" ng-click="update(HisData.FilteredRepoName)">Update</button>&nbsp;&nbsp;
-                    <button class="btn btn-info" ng-show="INFO" ng-click="deselect()">Clear</button>
-                </td>
             </form>
         </div>
     </div>

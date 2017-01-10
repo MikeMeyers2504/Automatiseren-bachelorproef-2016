@@ -17,6 +17,7 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
     var shacode;
     var currentURL;
     var LoginName;
+    $scope.highlighted = false;
     $scope.loading = false;
     $scope.error = false;
     $scope.logged = false;
@@ -345,13 +346,16 @@ app.controller('MainCtrl', function($scope, $http, $sce) {
 
     $scope.showSelectedText = function() {
         $scope.selectedText =  $scope.getSelectionText();
+        $scope.highlighted = true;
     };
 
     $scope.getSelectionText = function() {
       var text = "";
+
       if (window.getSelection) {
           text = window.getSelection().toString();
-      } else if (document.selection && document.selection.type != "Control") {
+      } 
+      else if (document.selection && document.selection.type != "Control") {
           text = document.selection.createRange().text;
       }
       return text;
