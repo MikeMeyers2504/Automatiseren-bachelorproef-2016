@@ -1,4 +1,4 @@
-var AuthToken ...
+var AuthToken = "?client_id=...&client_secret=...";
 
 var express = require('express');
 var app = express();
