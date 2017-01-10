@@ -43,3 +43,7 @@
 * Inloggen op github
 * Toestemming geven via github
 * Vanaf nu kan u alles doen wat onze site u te bieden heeft.
+
+## Aandachtspunt
+* Als je als promotor alle functies wilt doen op onze website moet je wel eerst zien dat je lid bent van de organisatie.
+* Dit is voor de rechten, dus dat je alles kan doen in die repo's van die organisatie.
