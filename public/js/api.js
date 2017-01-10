@@ -1,4 +1,4 @@
-var ClientId ...
+var ClientId = "?client_id=...";
 
 var app = angular.module('myApp');
 var VolledigeNaam;
